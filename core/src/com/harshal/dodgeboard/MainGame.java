@@ -6,11 +6,14 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import sun.font.TrueTypeFont;
 
- public class MainGame extends ApplicationAdapter implements InputProcessor{
+
+public class MainGame extends ApplicationAdapter implements InputProcessor{
 
     //camera
     private OrthographicCamera camera ;
@@ -22,6 +25,8 @@ import com.badlogic.gdx.math.Rectangle;
 
     //Tag for debugging
 	private static final String TAG="DodgeBoard";
+    private static final String REPTAG="Rep";
+
     //indicates whether finger is touching the screen
     private boolean isFingerDown;
 
@@ -29,12 +34,17 @@ import com.badlogic.gdx.math.Rectangle;
     private int fingerPosX,fingerPosY,prevFingerX,prevFingerY;
     //multiplier that is used to adjust relation between movement of board and movement of finger
     private double boardPosMultiplier;
+    //Timekeeper object to track time
+    private TimeKeeper timer;
+    //time that is used to change length of board
+    private long timeMilli;
+
 
 
 
     @Override
 	public void create () {
-		batch = new SpriteBatch();
+        batch = new SpriteBatch();
         Gdx.app.log(TAG, "create");
 
         // initialize camera
@@ -57,7 +67,14 @@ import com.badlogic.gdx.math.Rectangle;
         boardPosMultiplier=1;
 
 
+
+        timer=new TimeKeeper();
+        timer.initTimer();
+
+        timeMilli= timer.updateTime();
+
         Gdx.input.setInputProcessor(this);
+
 
 
     }
@@ -68,6 +85,9 @@ import com.badlogic.gdx.math.Rectangle;
         Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if(boardRect.width >=1080){
+
+        }
 
         //If the player has touched the screen,then get the difference between his previous and current finger
         //position and change the position of the board accordingly.
@@ -87,18 +107,44 @@ import com.badlogic.gdx.math.Rectangle;
 
         }
 
+        //increase width of board every 30 secs
+        if((timer.updateTime()-timeMilli)/1000 >= 30 ){
+            boardRect.width+=54;
+            timeMilli=timer.updateTime();
+        }
 
-        camera.update();
+
+        //increase height of board by a bit with increase in width so that it doesn't look weirdly stretched.
+        if(boardRect.width>=900){
+            boardRect.height=90;
+        }
+        else if(boardRect.width>=720){
+            boardRect.height=80;
+        }
+        else if(boardRect.width>=540){
+            boardRect.height=70;
+        }
+        else{
+            boardRect.height=60;
+        }
+
+
+
+            camera.update();
         batch.setProjectionMatrix(camera.combined);
 
         //draw textures
         batch.begin();
         batch.draw(boardTex, boardRect.x, boardRect.y, boardRect.width, boardRect.height);
+
         batch.end();
 
 
-
     }
+
+
+
+
 
     @Override
     public void dispose() {
