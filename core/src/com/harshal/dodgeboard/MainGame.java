@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import sun.font.TrueTypeFont;
+
 
 
 public class MainGame extends ApplicationAdapter implements InputProcessor{
@@ -52,7 +52,7 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         camera.setToOrtho(false, 1080, 1920);
 
         //define the board and its starting position
-        boardTex =new Texture(Gdx.files.internal("bar4.png"));
+        boardTex =new Texture(Gdx.files.internal("board360.png"));
 
         boardRect=new Rectangle();
         boardRect.x=360;
@@ -64,10 +64,10 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         isFingerDown=false;
         fingerPosX=0;
         fingerPosY=0;
-        boardPosMultiplier=1;
+        boardPosMultiplier=2;
 
 
-
+        //class to measure time
         timer=new TimeKeeper();
         timer.initTimer();
 
@@ -85,9 +85,7 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if(boardRect.width >=1080){
 
-        }
 
         //If the player has touched the screen,then get the difference between his previous and current finger
         //position and change the position of the board accordingly.
@@ -95,6 +93,10 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
             int Xdiff=fingerPosX-prevFingerX;
             int newPosX= (int)(boardRect.x+(Xdiff*boardPosMultiplier));
 
+            int Ydiff=fingerPosY-prevFingerY;
+            int newPosY= (int)(boardRect.y-(Ydiff*boardPosMultiplier));
+
+            //Update x
             if(newPosX>0 && newPosX+boardRect.width<1080){
                 boardRect.x=newPosX;
             }
@@ -104,6 +106,18 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
             else if(newPosX+boardRect.width>=1080){
                 boardRect.x=1080-boardRect.width;
             }
+
+            //Update y
+            if(newPosY>0 && newPosY+boardRect.height<1920){
+                boardRect.y=newPosY;
+            }
+            else if(newPosY<=0){
+                boardRect.y=0;
+            }
+            else if(newPosY+boardRect.height>=1920){
+                boardRect.y=1920-boardRect.height;
+            }
+
 
         }
 
@@ -116,21 +130,22 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
 
         //increase height of board by a bit with increase in width so that it doesn't look weirdly stretched.
         if(boardRect.width>=900){
-            boardRect.height=90;
+            //boardRect.height=90;
+            boardTex=new Texture(Gdx.files.internal("board900.png"));
         }
         else if(boardRect.width>=720){
-            boardRect.height=80;
+            //boardRect.height=80;
+            boardTex=new Texture(Gdx.files.internal("board720.png"));
         }
         else if(boardRect.width>=540){
-            boardRect.height=70;
-        }
-        else{
-            boardRect.height=60;
+            //boardRect.height=70;
+            boardTex=new Texture(Gdx.files.internal("board540.png"));
         }
 
 
 
-            camera.update();
+
+        camera.update();
         batch.setProjectionMatrix(camera.combined);
 
         //draw textures
