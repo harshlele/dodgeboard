@@ -1,26 +1,24 @@
 package com.harshal.dodgeboard;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-
-/*
-* THIS HAS BECOME REDUNDANT AFTER ALL THE GAME CODE WAS MOVED TO A SEPERATE SCREEN
-* DON'T ADD ANYTHING TO THIS
-* THIS WILL BE REMOVED IN A FEW DAYS.
-* */
-
-
-
-
-public class MainGame extends ApplicationAdapter implements InputProcessor{
+/**
+ * Created by harshal on 7/1/16.
+ * Screen fot the game
+ *
+ * THIS RENDERS MainGame REDUNDANT
+ * MainGame WILL BE KEPT FOR SOMETIME JUST IN CASE SOMETHING
+ * WRONG HAPPENS WITH THIS SCREEN
+ */
+public class GameScreen implements Screen,InputProcessor {
 
     //camera
     private OrthographicCamera camera ;
@@ -31,7 +29,7 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
     private Rectangle boardRect;
 
     //Tag for debugging
-	private static final String TAG="DodgeBoard";
+    private static final String TAG="DodgeBoard";
     private static final String REPTAG="Rep";
 
     //indicates whether finger is touching the screen
@@ -46,12 +44,17 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
     //time that is used to change length of board
     private long timeMilli;
 
+    //Game object that called this screen,will be stored here so that other screens
+    //can be set from inside this one.
+    private Game mainGame;
 
+    public GameScreen(Game game){
+        mainGame=game;
 
-
+    }
 
     @Override
-	public void create () {
+    public void show() {
         batch = new SpriteBatch();
         Gdx.app.log(TAG, "create");
 
@@ -85,21 +88,21 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         Gdx.input.setInputProcessor(this);
 
 
-
-
     }
 
-	@Override
-    public void render () {
+    @Override
+    public void render(float delta) {
+
+
         //clear the screen
         Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
 
-         //If the player has touched the screen,then get the difference between his previous and current finger
-         //position and change the position of the board accordingly.
-            if(isFingerDown){
+        //If the player has touched the screen,then get the difference between his previous and current finger
+        //position and change the position of the board accordingly.
+        if(isFingerDown){
             int Xdiff=fingerPosX-prevFingerX;
             int newPosX= (int)(boardRect.x+(Xdiff*boardPosMultiplier));
 
@@ -168,24 +171,23 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
     }
 
 
+    @Override
+    public void pause() {
+        Gdx.app.log(TAG,"pause");
 
+    }
 
 
     @Override
     public void dispose() {
-
         batch.dispose();
         boardTex.dispose();
-        super.dispose();
+
     }
 
 
-
-    //if the finger is down,clear out previous touch co-ordinates(so that the board doesn't sporadically move around the screen)
-    //and save new co-ordinates
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
         isFingerDown = true;
         prevFingerX = screenX;
         prevFingerY = screenY;
@@ -202,7 +204,7 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         prevFingerY=fingerPosY;
         fingerPosX=screenX;
         fingerPosY=screenY;
-        Gdx.app.log(TAG,"Finger Up: "+String.valueOf(fingerPosX)+","+String.valueOf(fingerPosY));
+        Gdx.app.log(TAG, "Finger Up: " + String.valueOf(fingerPosX) + "," + String.valueOf(fingerPosY));
         return true;
     }
 
@@ -216,27 +218,25 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         return true;
     }
 
-     @Override
-     public void pause() {
-         Gdx.app.log(TAG,"pause");
-         super.pause();
-
-     }
 
 
 
 
+    /*CURRENTLY UNUSED METHODS*/
 
+    @Override
+    public void resize(int width, int height) {
 
+    }
+    @Override
+    public void resume() {
 
+    }
 
+    @Override
+    public void hide() {
 
-
-
-
-
-
-
+    }
 
 
 
@@ -244,31 +244,36 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
 
 
 
-    /*METHODS FOR DESKTOP THAT I HAVE TO OVERRIDE BUT ARE OF NO USE*/
 
-     @Override
-     public boolean scrolled(int amount) {
-         return false;
-     }
+    /* DESKTOP METHODS THAT I HAVE TO OVERRIDE BUT HAVE NO USE OF*/
 
-     @Override
-     public boolean keyDown(int keycode) {
-         return false;
-     }
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
 
-     @Override
-     public boolean keyUp(int keycode) {
-         return false;
-     }
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
 
-     @Override
-     public boolean keyTyped(char character) {
-         return false;
-     }
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
 
-     @Override
-     public boolean mouseMoved(int screenX, int screenY) {
-         return false;
-     }
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
 
- }
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
+
+
+
+}
+
+
