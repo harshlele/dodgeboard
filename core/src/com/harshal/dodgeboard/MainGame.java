@@ -64,7 +64,7 @@ public class MainGame extends ApplicationAdapter implements InputProcessor{
         isFingerDown=false;
         fingerPosX=0;
         fingerPosY=0;
-        boardPosMultiplier=2;
+        boardPosMultiplier=1;
 
 
         //class to measure time
