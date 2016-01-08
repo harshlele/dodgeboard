@@ -12,22 +12,22 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public class Button {
     //Texture and button
-    protected Texture buttonTex;
-    protected Rectangle buttonRect;
+    protected Texture Tex;
+    protected Rectangle Rect;
 
     //Load the texture from FileName
     public Button(String FileName) {
-        buttonRect=new Rectangle();
-        buttonTex=new Texture(Gdx.files.internal(FileName));
+        Rect =new Rectangle();
+        Tex =new Texture(Gdx.files.internal(FileName));
 
     }
 
     //set co-ordinates and dimensions
     public void setInfo(int X, int Y,int width,int height){
-        buttonRect.x=X;
-        buttonRect.y=Y;
-        buttonRect.width=width;
-        buttonRect.height=height;
+        Rect.x=X;
+        Rect.y=Y;
+        Rect.width=width;
+        Rect.height=height;
     }
 
 

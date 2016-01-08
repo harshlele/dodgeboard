@@ -40,7 +40,8 @@ public class GameScreen implements Screen,InputProcessor {
     private boolean isFingerDown;
 
     //position of finger
-    private int fingerPosX,fingerPosY,prevFingerX,prevFingerY;
+    //private int fingerPosX,fingerPosY,prevFingerX,prevFingerY;
+    private Finger f;
 
     //multiplier that is used to adjust relation between movement of board and movement of finger
     private double boardPosMultiplier;
@@ -83,9 +84,8 @@ public class GameScreen implements Screen,InputProcessor {
 
         //initialize variables
         isFingerDown=false;
-        fingerPosX=0;
-        fingerPosY=0;
         boardPosMultiplier=1.25;
+        f=new Finger();
 
         //initialise the button class
         pauseButton=new Button("pauseButton2.png");
@@ -115,10 +115,10 @@ public class GameScreen implements Screen,InputProcessor {
         //If the player has touched the screen,then get the difference between his previous and current finger
         //position and change the position of the board accordingly.
         if(isFingerDown){
-            int Xdiff=fingerPosX-prevFingerX;
+            int Xdiff=(int)f.Rect.x-f.prevFingerX;
             int newPosX= (int)(boardRect.x+(Xdiff*boardPosMultiplier));
 
-            int Ydiff=fingerPosY-prevFingerY;
+            int Ydiff=(int)f.Rect.y-f.prevFingerY;
             int newPosY= (int)(boardRect.y-(Ydiff*boardPosMultiplier));
 
             //Update x
@@ -176,7 +176,7 @@ public class GameScreen implements Screen,InputProcessor {
         //draw textures
         batch.begin();
         batch.draw(boardTex, boardRect.x, boardRect.y, boardRect.width, boardRect.height);
-        batch.draw(pauseButton.buttonTex,pauseButton.buttonRect.x,pauseButton.buttonRect.y,pauseButton.buttonRect.width,pauseButton.buttonRect.height);
+        batch.draw(pauseButton.Tex,pauseButton.Rect.x,pauseButton.Rect.y,pauseButton.Rect.width,pauseButton.Rect.height);
         batch.end();
 
 
@@ -195,7 +195,7 @@ public class GameScreen implements Screen,InputProcessor {
     public void dispose() {
         batch.dispose();
         boardTex.dispose();
-        pauseButton.buttonTex.dispose();
+        pauseButton.Tex.dispose();
 
     }
 
@@ -203,32 +203,23 @@ public class GameScreen implements Screen,InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         isFingerDown = true;
-        prevFingerX = screenX;
-        prevFingerY = screenY;
-        fingerPosX = screenX;
-        fingerPosY = screenY;
-        Gdx.app.log(TAG, "Finger Down: " + String.valueOf(fingerPosX) + "," + String.valueOf(fingerPosY));
+        f.setNoDiffLoc(screenX,screenY);
+        Gdx.app.log(TAG, "Finger Down: " + String.valueOf(f.Rect.x) + "," + String.valueOf(f.Rect.y));
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         isFingerDown=false;
-        prevFingerX=fingerPosX;
-        prevFingerY=fingerPosY;
-        fingerPosX=screenX;
-        fingerPosY=screenY;
-        Gdx.app.log(TAG, "Finger Up: " + String.valueOf(fingerPosX) + "," + String.valueOf(fingerPosY));
+        f.setNewLoc(screenX,screenY);
+        Gdx.app.log(TAG, "Finger Up: " + String.valueOf(f.Rect.x) + "," + String.valueOf(f.Rect.y));
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        prevFingerX=fingerPosX;
-        prevFingerY=fingerPosY;
-        fingerPosX=screenX;
-        fingerPosY=screenY;
-        Gdx.app.log(TAG,"Finger Moved: "+String.valueOf(fingerPosX)+","+String.valueOf(fingerPosY));
+        f.setNewLoc(screenX,screenY);
+        Gdx.app.log(TAG, "Finger Moved: " + String.valueOf(f.Rect.x) + "," + String.valueOf(f.Rect.y));
         return true;
     }
 
