@@ -1,6 +1,5 @@
 package com.harshal.dodgeboard;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
  * Created by harshal on 7/1/16.
  * Screen fot the game
  *
- * THIS RENDERS GameObsolete REDUNDANT
+ * THIS RENDERS GameObsolete OBSOLETE
  * GameObsolete WILL BE KEPT FOR SOMETIME JUST IN CASE SOMETHING
  * WRONG HAPPENS WITH THIS SCREEN
  */
@@ -28,6 +27,11 @@ public class GameScreen implements Screen,InputProcessor {
     //Rectangle instance for holding info about the position of object
     private Rectangle boardRect;
 
+    //Self created button class for displaying buttons
+    Button pauseButton;
+
+
+
     //Tag for debugging
     private static final String TAG="DodgeBoard";
     private static final String REPTAG="Rep";
@@ -37,18 +41,21 @@ public class GameScreen implements Screen,InputProcessor {
 
     //position of finger
     private int fingerPosX,fingerPosY,prevFingerX,prevFingerY;
+
     //multiplier that is used to adjust relation between movement of board and movement of finger
     private double boardPosMultiplier;
+
     //Timekeeper object to track time
     private TimeKeeper timer;
+
     //time that is used to change length of board
     private long timeMilli;
 
     //Game object that called this screen,will be stored here so that other screens
     //can be set from inside this one.
-    private Game mainGame;
+    private MainGame mainGame;
 
-    public GameScreen(Game game){
+    public GameScreen(MainGame game){
         mainGame=game;
 
     }
@@ -71,13 +78,18 @@ public class GameScreen implements Screen,InputProcessor {
         boardRect.width=360;
         boardRect.height=60;
 
+        //store this class in the Game object so that it can be reused while resuming from a paused game
+        mainGame.storeScreen(this);
+
         //initialize variables
         isFingerDown=false;
         fingerPosX=0;
         fingerPosY=0;
         boardPosMultiplier=1.25;
 
-
+        //initialise the button class
+        pauseButton=new Button("pauseButton2.png");
+        pauseButton.setInfo(880,1720,200,200);
 
         //class to measure time
         timer=new TimeKeeper();
@@ -164,6 +176,7 @@ public class GameScreen implements Screen,InputProcessor {
         //draw textures
         batch.begin();
         batch.draw(boardTex, boardRect.x, boardRect.y, boardRect.width, boardRect.height);
+        batch.draw(pauseButton.buttonTex,pauseButton.buttonRect.x,pauseButton.buttonRect.y,pauseButton.buttonRect.width,pauseButton.buttonRect.height);
         batch.end();
 
 
@@ -182,6 +195,7 @@ public class GameScreen implements Screen,InputProcessor {
     public void dispose() {
         batch.dispose();
         boardTex.dispose();
+        pauseButton.buttonTex.dispose();
 
     }
 
