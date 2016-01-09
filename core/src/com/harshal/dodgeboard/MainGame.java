@@ -11,6 +11,13 @@ public class MainGame extends Game {
     //GameScreen object that can be used to resume the game
     private GameScreen storedScreen;
 
+    public int screenWidth,screenHeight;
+
+    public MainGame(int width,int height) {
+       screenWidth=width;
+       screenHeight=height;
+    }
+
     //create method is fired when the game begins
     @Override
     public void create() {

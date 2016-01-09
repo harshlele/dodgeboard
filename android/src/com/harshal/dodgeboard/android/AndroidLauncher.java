@@ -1,6 +1,8 @@
 package com.harshal.dodgeboard.android;
 
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -15,6 +17,12 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer=false;
         config.useCompass=false;
-		initialize(new MainGame(), config);
+
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+		initialize(new MainGame(width,height), config);
 	}
 }

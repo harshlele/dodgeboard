@@ -27,10 +27,6 @@ public class GameScreen implements Screen,InputProcessor {
     //Rectangle instance for holding info about the position of object
     private Rectangle boardRect;
 
-    //Self created button class for displaying buttons
-    Button pauseButton;
-
-
 
     //Tag for debugging
     private static final String TAG="DodgeBoard";
@@ -87,9 +83,6 @@ public class GameScreen implements Screen,InputProcessor {
         boardPosMultiplier=1.25;
         f=new Finger();
 
-        //initialise the button class
-        pauseButton=new Button("pauseButton2.png");
-        pauseButton.setInfo(880,1720,200,200);
 
         //class to measure time
         timer=new TimeKeeper();
@@ -111,6 +104,7 @@ public class GameScreen implements Screen,InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+        /*______________UPDATING THE STATE OF THE GAME__________________*/
 
         //If the player has touched the screen,then get the difference between his previous and current finger
         //position and change the position of the board accordingly.
@@ -170,13 +164,14 @@ public class GameScreen implements Screen,InputProcessor {
 
 
 
+        /*________________________RENDERING TO SCREEN__________________________*/
+
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
         //draw textures
         batch.begin();
         batch.draw(boardTex, boardRect.x, boardRect.y, boardRect.width, boardRect.height);
-        batch.draw(pauseButton.Tex,pauseButton.Rect.x,pauseButton.Rect.y,pauseButton.Rect.width,pauseButton.Rect.height);
         batch.end();
 
 
@@ -195,7 +190,6 @@ public class GameScreen implements Screen,InputProcessor {
     public void dispose() {
         batch.dispose();
         boardTex.dispose();
-        pauseButton.Tex.dispose();
 
     }
 
