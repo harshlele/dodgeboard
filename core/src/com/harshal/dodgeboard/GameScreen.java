@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by harshal on 7/1/16.
@@ -26,7 +27,6 @@ public class GameScreen implements Screen,InputProcessor {
     private Texture boardTex;
     //Rectangle instance for holding info about the position of object
     private Rectangle boardRect;
-
 
     //Tag for debugging
     private static final String TAG="DodgeBoard";
@@ -52,10 +52,17 @@ public class GameScreen implements Screen,InputProcessor {
     //can be set from inside this one.
     private MainGame mainGame;
 
+    //array of dropables that will be drawn on screen
+    private Array<Dropable> droppedArray;
+    //time since last object was dropped.
+    private float lastDroppedTime;
+
+    //store an instance of MainGame so that we can change screens from inside this screen
     public GameScreen(MainGame game){
         mainGame=game;
 
     }
+
 
     @Override
     public void show() {
@@ -68,7 +75,6 @@ public class GameScreen implements Screen,InputProcessor {
 
         //define the board and its starting position
         boardTex =new Texture(Gdx.files.internal("board360.png"));
-
         boardRect=new Rectangle();
         boardRect.x=360;
         boardRect.y=556;
@@ -88,9 +94,14 @@ public class GameScreen implements Screen,InputProcessor {
         timer=new TimeKeeper();
         timer.initTimer();
 
+        Gdx.input.setInputProcessor(this);
+
+        //initialize the array
+        droppedArray =new Array<Dropable>();
+
         timeMilli= timer.updateTime();
 
-        Gdx.input.setInputProcessor(this);
+        lastDroppedTime=0;
 
 
     }
@@ -147,7 +158,7 @@ public class GameScreen implements Screen,InputProcessor {
         }
 
 
-        //increase height of board by a bit with increase in width so that it doesn't look weirdly stretched.
+        //Change teture of board with increase in width so that it doesn't look weirdly stretched.
         if(boardRect.width>=900){
             //boardRect.height=90;
             boardTex=new Texture(Gdx.files.internal("board900.png"));
@@ -162,6 +173,44 @@ public class GameScreen implements Screen,InputProcessor {
         }
 
 
+        //Get the time something was dropped, if it was 1 second(or more) ago
+        //Add a Dopable to the array to be drawn
+        lastDroppedTime+=Gdx.graphics.getDeltaTime();
+        if(lastDroppedTime>=1){
+            Dropable d=new Dropable("dropable.png");
+            d.setLoc((int)(Math.random()*960),1920);
+            d.index=droppedArray.size;
+            droppedArray.add(d);
+            lastDroppedTime=0;
+        }
+
+
+
+        //If any objects have reached the end of the screen or, if the board has collided with
+        //any of them, clear them out.
+        //Else, increase lower their position by 10
+        for(int i=0;i<droppedArray.size-1;i++){
+            Dropable d= droppedArray.get(i);
+            if(d!=null) {
+                //check for end of screen
+                if (d.Rect.y <= 0) {
+                    droppedArray.removeIndex(i);
+                    droppedArray.insert(i, null);
+
+                }
+                //check for collisions with board
+                else if(d.Rect.overlaps(boardRect)){
+                    droppedArray.removeIndex(i);
+                    droppedArray.insert(i, null);
+                }
+                //if neither has happened, increase height by 10
+                else {
+                    d.Rect.y -= 10;
+                }
+            }
+        }
+
+
 
 
         /*________________________RENDERING TO SCREEN__________________________*/
@@ -171,7 +220,17 @@ public class GameScreen implements Screen,InputProcessor {
 
         //draw textures
         batch.begin();
+        //draw board
         batch.draw(boardTex, boardRect.x, boardRect.y, boardRect.width, boardRect.height);
+
+        //draw all Dropable objects in the array
+        for(int i=0;i<droppedArray.size-1;i++){
+            Dropable d=droppedArray.get(i);
+            if(d!=null){
+                batch.draw(d.Tex,d.Rect.x,d.Rect.y,d.Rect.width,d.Rect.height);
+            }
+
+        }
         batch.end();
 
 
@@ -188,8 +247,17 @@ public class GameScreen implements Screen,InputProcessor {
 
     @Override
     public void dispose() {
+        //dispose the SpriteBatch
         batch.dispose();
+        //dispose the board textures
         boardTex.dispose();
+        //dispose all the Dropable textures
+        for(int i=0;i<droppedArray.size-1;i++){
+            Dropable d= droppedArray.get(i);
+            if(d!=null){
+            d.Tex.dispose();
+            }
+        }
 
     }
 
