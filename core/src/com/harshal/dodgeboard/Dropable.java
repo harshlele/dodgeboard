@@ -2,7 +2,6 @@ package com.harshal.dodgeboard;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -20,9 +19,16 @@ public class Dropable {
     //Used while clearing  out objects
     protected int index;
 
+    protected String TYPE;
+
+    public static final String NORMAL="dropable.png";
+    public static final String CUT="dropable_cut.png";
+
+
     public Dropable(String FileName) {
         //Load texture and store dimensions in the Rectangle
         Tex = new Texture(Gdx.files.internal(FileName));
+        TYPE=FileName;
         Rect=new Rectangle();
         Rect.width=Tex.getWidth();
         Rect.height=Tex.getHeight();

@@ -55,13 +55,20 @@ public class GameScreen implements Screen,InputProcessor {
     //array of dropables that will be drawn on screen
     private Array<Dropable> droppedArray;
     //time since last object was dropped.
-    private float lastDroppedTime;
+    //lastDroppedLimit is value after which next dropable will be sent
+    private float lastDroppedTime,lastDroppedLimit;
+    //Value that Vertical component of motion of dropables will be changed every frame
+    private int dropableYIncrement;
+    //random no between 0 and 100 that determines whether dropped item is a normal sphere or a cut sphere.
+    private int dropableCode;
 
     //store an instance of MainGame so that we can change screens from inside this screen
     public GameScreen(MainGame game){
         mainGame=game;
 
     }
+
+
 
 
     @Override
@@ -88,6 +95,9 @@ public class GameScreen implements Screen,InputProcessor {
         isFingerDown=false;
         boardPosMultiplier=1.25;
         f=new Finger();
+        lastDroppedTime=0;
+        lastDroppedLimit=1;
+        dropableYIncrement=10;
 
 
         //class to measure time
@@ -101,7 +111,6 @@ public class GameScreen implements Screen,InputProcessor {
 
         timeMilli= timer.updateTime();
 
-        lastDroppedTime=0;
 
 
     }
@@ -151,33 +160,21 @@ public class GameScreen implements Screen,InputProcessor {
 
         }
 
-        //increase width of board every 30 secs
-        if((timer.updateTime()-timeMilli)/1000 >= 30 ){
-            boardRect.width+=54;
-            timeMilli=timer.updateTime();
-        }
-
-
-        //Change teture of board with increase in width so that it doesn't look weirdly stretched.
-        if(boardRect.width>=900){
-            //boardRect.height=90;
-            boardTex=new Texture(Gdx.files.internal("board900.png"));
-        }
-        else if(boardRect.width>=720){
-            //boardRect.height=80;
-            boardTex=new Texture(Gdx.files.internal("board720.png"));
-        }
-        else if(boardRect.width>=540){
-            //boardRect.height=70;
-            boardTex=new Texture(Gdx.files.internal("board540.png"));
-        }
 
 
         //Get the time something was dropped, if it was 1 second(or more) ago
         //Add a Dopable to the array to be drawn
         lastDroppedTime+=Gdx.graphics.getDeltaTime();
-        if(lastDroppedTime>=1){
-            Dropable d=new Dropable("dropable.png");
+        if(lastDroppedTime>=lastDroppedLimit){
+            dropableCode=(int)(Math.random()*100);
+            Dropable d;
+            //With this,theoritically,10% of all dropped items should be cut spheres
+            if(dropableCode >10) {
+                d = new Dropable(Dropable.NORMAL);
+            }
+            else{
+                d = new Dropable(Dropable.CUT);
+            }
             d.setLoc((int)(Math.random()*960),1920);
             d.index=droppedArray.size;
             droppedArray.add(d);
@@ -193,19 +190,27 @@ public class GameScreen implements Screen,InputProcessor {
             Dropable d= droppedArray.get(i);
             if(d!=null) {
                 //check for end of screen
-                if (d.Rect.y <= 0) {
+                if (d.Rect.y <= 0-d.Rect.height) {
                     droppedArray.removeIndex(i);
                     droppedArray.insert(i, null);
 
                 }
                 //check for collisions with board
+                //Depending upon the type of sphere that collided, either decrease player's
+                // life or decrease length of board
+                //WORK IN PROGRESS
                 else if(d.Rect.overlaps(boardRect)){
+                    /*if(d.TYPE.equals(Dropable.CUT)){
+
+                    }
+                    */
                     droppedArray.removeIndex(i);
                     droppedArray.insert(i, null);
+
                 }
                 //if neither has happened, increase height by 10
                 else {
-                    d.Rect.y -= 10;
+                    d.Rect.y -= dropableYIncrement;
                 }
             }
         }
@@ -228,6 +233,7 @@ public class GameScreen implements Screen,InputProcessor {
             Dropable d=droppedArray.get(i);
             if(d!=null){
                 batch.draw(d.Tex,d.Rect.x,d.Rect.y,d.Rect.width,d.Rect.height);
+
             }
 
         }
