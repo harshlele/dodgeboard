@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
+import java.sql.Time;
+
 /**
  * Created by harshal on 7/1/16.
  * Screen fot the game
@@ -61,6 +63,12 @@ public class GameScreen implements Screen,InputProcessor {
     private int dropableYIncrement;
     //random no between 0 and 100 that determines whether dropped item is a normal sphere or a cut sphere.
     private int dropableCode;
+    //boolean indicating whether board has been shortened.
+    private boolean isBoardShort;
+    //Timer to keep track of time since board was shortened so that we can lengthen the board again
+    //after 30 seconds
+    private TimeKeeper shortTime;
+
 
     //store an instance of MainGame so that we can change screens from inside this screen
     public GameScreen(MainGame game){
@@ -98,7 +106,7 @@ public class GameScreen implements Screen,InputProcessor {
         lastDroppedTime=0;
         lastDroppedLimit=1;
         dropableYIncrement=10;
-
+        isBoardShort=false;
 
         //class to measure time
         timer=new TimeKeeper();
@@ -197,13 +205,17 @@ public class GameScreen implements Screen,InputProcessor {
                 }
                 //check for collisions with board
                 //Depending upon the type of sphere that collided, either decrease player's
-                // life or decrease length of board
+                // life or decrease length of board for 30 seconds
                 //WORK IN PROGRESS
                 else if(d.Rect.overlaps(boardRect)){
-                    /*if(d.TYPE.equals(Dropable.CUT)){
-
+                    if(d.TYPE.equals(Dropable.CUT)){
+                        if(boardRect.width==360){
+                            boardRect.width=240;
+                            isBoardShort=true;
+                            shortTime=new TimeKeeper();
+                            shortTime.initTimer();
+                        }
                     }
-                    */
                     droppedArray.removeIndex(i);
                     droppedArray.insert(i, null);
 
@@ -212,6 +224,16 @@ public class GameScreen implements Screen,InputProcessor {
                 else {
                     d.Rect.y -= dropableYIncrement;
                 }
+            }
+        }
+
+        //If the board has been shortened,check if 30 seconds have elapsed since that happened.
+        //If more than 30 seconds have elapsed, lengthen the board again
+        if(isBoardShort){
+            if(shortTime.getTimerValMSec() >= 30000){
+                boardRect.width=360;
+                isBoardShort=false;
+                shortTime=null;
             }
         }
 
