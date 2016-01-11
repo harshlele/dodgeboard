@@ -1,6 +1,7 @@
 package com.harshal.dodgeboard;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 
 /**
  * Created by harshal on 8/1/16.
@@ -29,10 +30,6 @@ public class MainGame extends Game {
         storedScreen=screen;
 
     }
-
-
-
-
 
 
 }
