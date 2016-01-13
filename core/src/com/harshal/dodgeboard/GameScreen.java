@@ -3,20 +3,21 @@ package com.harshal.dodgeboard;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
-import java.sql.Time;
+
 
 /**
  * Created by harshal on 7/1/16.
- * Screen fot the game
+ * Screen for the game
  *
  * THIS RENDERS GameObsolete OBSOLETE
  * GameObsolete WILL BE KEPT FOR SOMETIME JUST IN CASE SOMETHING
@@ -78,6 +79,14 @@ public class GameScreen implements Screen,InputProcessor {
     private boolean isGameOver;
     //boolean indicating whether game is running
     private boolean isGameRunning;
+    //Font for drawinng no of lines and time on screen
+    private BitmapFont font;
+    //object for getting bounds of text so that we can correctly display the score and time
+    private GlyphLayout glyphLayout;
+    //"official" time of system
+    //this is the time that will be stored for saving high scores and such
+    Time officialTime;
+
 
     //store an instance of MainGame so that we can change screens from inside this screen
     public GameScreen(MainGame game){
@@ -105,6 +114,7 @@ public class GameScreen implements Screen,InputProcessor {
         boardRect.width=360;
         boardRect.height=60;
 
+
         //store this class in the Game object so that it can be reused while resuming from a paused game
         mainGame.storeScreen(this);
 
@@ -119,6 +129,11 @@ public class GameScreen implements Screen,InputProcessor {
         lives=5;
         isGameOver=false;
         isGameRunning=true;
+        font=new BitmapFont(Gdx.files.internal("fonts/font.fnt"));
+        glyphLayout=new GlyphLayout();
+        officialTime =new Time();
+
+
 
         //class to measure time
         timer=new TimeKeeper();
@@ -236,10 +251,8 @@ public class GameScreen implements Screen,InputProcessor {
                             }
                         }
                         else if(d.TYPE.equals(Dropable.NORMAL)){
-                            Gdx.app.log("Collisions","Normal collision");
                             lives--;
-                            Gdx.app.log("Collisions",String.valueOf(lives));
-                        }
+                            }
                         droppedArray.removeIndex(i);
                         droppedArray.insert(i, null);
 
@@ -254,15 +267,20 @@ public class GameScreen implements Screen,InputProcessor {
             //If the board has been shortened,check if 30 seconds have elapsed since that happened.
             //If more than 30 seconds have elapsed, lengthen the board again
             if (isBoardShort) {
-                if (shortTime.getTimerValMSec() >= 30000) {
+                if (shortTime.getTimerValMSec(true) >= 30000) {
                     boardRect.width = 360;
                     isBoardShort = false;
                     shortTime = null;
                 }
             }
 
+            //update the game time
+            officialTime.timeStr=timer.getTimerValStr();
+            officialTime.timeMilli=timer.getTimerValMSec(false);
+
 
         }
+
 
 
 
@@ -296,6 +314,18 @@ public class GameScreen implements Screen,InputProcessor {
             s.draw(batch);
             batch.end();
         }
+
+        //render the lives remaining
+        //and the game time
+        batch.begin();
+
+        glyphLayout.setText(font, "Lives:" + String.valueOf(lives));
+        font.draw(batch, glyphLayout, 1080 - glyphLayout.width, 1920 - glyphLayout.height);
+        glyphLayout.setText(font,officialTime.timeStr);
+        font.draw(batch,glyphLayout,10,1920-glyphLayout.height);
+
+        batch.end();
+
 
 
 

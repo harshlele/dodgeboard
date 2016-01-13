@@ -30,16 +30,19 @@ public class TimeKeeper {
     }
 
     //get timer value in milliseconds
-    public long getTimerValMSec(){
-        updateTime();
+    //updateTime sets whether time is to be updated or not
+    //this is used while updating the time in every frame
+    public long getTimerValMSec(boolean updateTime){
+        if(updateTime) {
+            updateTime();
+        }
         timerVal=latestTime-initTime;
         return timerVal;
     }
 
-    //Get timer value as a string in Min:Sec format
     public String getTimerValStr(){
         String val="";
-        getTimerValMSec();
+        getTimerValMSec(true);
         if(timerVal/1000 >= 60){
             long timerValSec=timerVal/1000;
             int timeMin=(int)timerValSec/60;
@@ -56,3 +59,14 @@ public class TimeKeeper {
 
 
 }
+
+//class to store time in both milliseconds and as a string in min:sec format
+class Time {
+    protected long timeMilli;
+    protected String timeStr;
+
+
+
+
+}
+
