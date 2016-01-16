@@ -18,6 +18,8 @@ public class Dropable {
     //Index of object in the Dropable array
     //Used while clearing  out objects
     protected int index;
+    //indicates whether this object is to be dropped besides another one
+    protected boolean isParallelObj;
 
     protected String TYPE;
 
@@ -32,6 +34,7 @@ public class Dropable {
         Rect=new Rectangle();
         Rect.width=Tex.getWidth();
         Rect.height=Tex.getHeight();
+        isParallelObj=false;
     }
 
     public void setLoc(int X,int Y){

@@ -169,6 +169,13 @@ public class GameScreen implements Screen,InputProcessor {
         if(lives <=0){
             isGameRunning=false;
             isGameOver=true;
+
+        }
+
+
+        if(isGameOver){
+            mainGame.storeScreen(this);
+            mainGame.setScreen(new GameOverScreen());
         }
 
         if(isGameRunning) {
@@ -305,6 +312,7 @@ public class GameScreen implements Screen,InputProcessor {
         }
         batch.end();
         //If the game is over,draw the game over texture.
+        /*
         if(isGameOver){
             batch.begin();
             Sprite s=new Sprite(gameOverTex);
@@ -314,6 +322,7 @@ public class GameScreen implements Screen,InputProcessor {
             s.draw(batch);
             batch.end();
         }
+        */
 
         //render the lives remaining
         //and the game time
