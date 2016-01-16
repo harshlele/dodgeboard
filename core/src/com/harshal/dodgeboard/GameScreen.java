@@ -155,13 +155,9 @@ public class GameScreen implements Screen,InputProcessor {
 
     }
 
-    @Override
-    public void render(float delta) {
+    //Update positions of player, and other objects
+    public void update(float delta){
 
-
-        //clear the screen
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
         //check for things such as whether the game is paused outside the main if statement, and control
@@ -259,7 +255,7 @@ public class GameScreen implements Screen,InputProcessor {
                         }
                         else if(d.TYPE.equals(Dropable.NORMAL)){
                             lives--;
-                            }
+                        }
                         droppedArray.removeIndex(i);
                         droppedArray.insert(i, null);
 
@@ -288,10 +284,19 @@ public class GameScreen implements Screen,InputProcessor {
 
         }
 
+    }
 
 
+    //render frame
+    @Override
+    public void render(float delta) {
 
-        /*________________________RENDERING TO SCREEN__________________________*/
+        update(delta);
+
+
+        //clear the screen
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -311,18 +316,6 @@ public class GameScreen implements Screen,InputProcessor {
 
         }
         batch.end();
-        //If the game is over,draw the game over texture.
-        /*
-        if(isGameOver){
-            batch.begin();
-            Sprite s=new Sprite(gameOverTex);
-            s.setPosition(0,710);
-            s.setSize(s.getWidth(),s.getHeight());
-            s.setAlpha(0.4f);
-            s.draw(batch);
-            batch.end();
-        }
-        */
 
         //render the lives remaining
         //and the game time
