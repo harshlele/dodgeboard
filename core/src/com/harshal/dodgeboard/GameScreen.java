@@ -123,7 +123,7 @@ public class GameScreen implements Screen,InputProcessor {
         boardPosMultiplier=1.25;
         f=new Finger();
         lastDroppedTime=0;
-        lastDroppedLimit=1;
+        lastDroppedLimit=1f;
         dropableYIncrement=10;
         isBoardShort=false;
         lives=5;
@@ -143,10 +143,6 @@ public class GameScreen implements Screen,InputProcessor {
 
         //initialize the array
         droppedArray =new Array<Dropable>();
-
-        //define game over texture
-        gameOverTex=new Texture(Gdx.files.internal("gameOver.png"));
-
 
 
         timeMilli= timer.updateTime();
