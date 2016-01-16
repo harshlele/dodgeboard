@@ -22,7 +22,7 @@ public class MainGame extends Game {
     //create method is fired when the game begins
     @Override
     public void create() {
-        setScreen(new GameOverScreen("00:00"));
+        setScreen(new GameOverScreen("00:00",this));
     }
 
     //store the gamescreen so that the game can be resumed from a paused state.

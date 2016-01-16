@@ -40,18 +40,33 @@ public class TimeKeeper {
         return timerVal;
     }
 
+
+    //get timer value formatted in min:sec type as a string
     public String getTimerValStr(){
         String val="";
         getTimerValMSec(true);
         if(timerVal/1000 >= 60){
             long timerValSec=timerVal/1000;
             int timeMin=(int)timerValSec/60;
+            String minString=String.valueOf(timeMin);
+            if(timeMin < 10){
+                minString="0"+minString;
+            }
+
             int timeSec=(int)timerValSec%60;
-            val=String.valueOf(timeMin)+":"+String.valueOf(timeSec);
+            String secString=String.valueOf(timeSec);
+            if(timeSec < 10){
+                secString="0"+secString;
+            }
+            val=minString+":"+secString;
         }
         else if(timerVal/1000 < 60){
             int timeSec=(int)timerVal/1000;
-            val="00:"+String.valueOf(timeSec);
+            String secString=String.valueOf(timeSec);
+            if(timeSec < 10){
+                secString="0"+secString;
+            }
+            val="00:"+secString;
         }
         return val;
     }

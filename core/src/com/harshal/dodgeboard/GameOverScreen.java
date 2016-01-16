@@ -5,10 +5,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -25,11 +29,17 @@ public class GameOverScreen implements Screen {
     private Label scoreLabel,timetextLabel;
     private BitmapFont scoreFont;
 
+
     //String that stores the game time
     private String gamePlayTime;
 
-    public GameOverScreen(String gamePlayTime) {
+    //instance of MainGame that can be used for changing screens
+    private MainGame mainGame;
+
+    public GameOverScreen(String gamePlayTime,MainGame game)
+    {
         this.gamePlayTime = gamePlayTime;
+        mainGame=game;
     }
 
     @Override
@@ -56,17 +66,31 @@ public class GameOverScreen implements Screen {
         mainMenuButton.setPosition((stage.getWidth() / 2 - playAgainButton.getWidth() / 2), (float) (stage.getHeight() * 0.1 - playAgainButton.getHeight() / 2));
 
         //initialize label that shows "Your Timings:"
-        timetextLabel=new Label("Your Timings",new Label.LabelStyle(scoreFont,scoreFont.getColor()));
-        timetextLabel.setFontScale(0.8f);
-        timetextLabel.setWrap(true);
+        timetextLabel=new Label("Game Over",new Label.LabelStyle(scoreFont,scoreFont.getColor()));
+        if(stage.getWidth() < 540) {
+            timetextLabel.setFontScale(0.5f);
+            timetextLabel.setSize(300,100);
+        }
+        else{
+            timetextLabel.setFontScale(0.8f);
+            timetextLabel.setWrap(true);
+        }
+        Gdx.app.log("DodgeBoard", String.valueOf(stage.getWidth()));
+        //timetextLabel.setWrap(true);
         timetextLabel.setPosition((stage.getWidth()/2-timetextLabel.getWidth()/2)+80,(float)(stage.getHeight()*0.7-timetextLabel.getHeight()/2));
 
         //initialize label that shows the score
         scoreLabel=new Label(gamePlayTime,new Label.LabelStyle(scoreFont,scoreFont.getColor()));
         scoreLabel.setSize(400,200);
         scoreLabel.setFontScale(1.5f);
-        scoreLabel.setPosition((stage.getWidth()/2-scoreLabel.getWidth()/2),(float)(stage.getHeight()*0.6-scoreLabel.getHeight()/2));
+        scoreLabel.setPosition((stage.getWidth() / 2 - scoreLabel.getWidth() / 2), (float) (stage.getHeight() * 0.6 - scoreLabel.getHeight() / 2));
 
+        playAgainButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainGame.setScreen(new GameScreen(mainGame));
+            }
+        });
 
         //add buttons to stage
         stage.addActor(playAgainButton);

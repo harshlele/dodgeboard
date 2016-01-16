@@ -175,7 +175,7 @@ public class GameScreen implements Screen,InputProcessor {
 
         if(isGameOver){
             mainGame.storeScreen(this);
-            mainGame.setScreen(new GameOverScreen(officialTime.timeStr));
+            mainGame.setScreen(new GameOverScreen(officialTime.timeStr,mainGame));
         }
 
         if(isGameRunning) {
