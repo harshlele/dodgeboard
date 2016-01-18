@@ -5,15 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * Created by harshal on 14/1/16.
@@ -45,7 +43,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void show() {
 
-        stage=new Stage(new ScreenViewport());
+        stage=new Stage(new FitViewport(1080,1920));
         Gdx.input.setInputProcessor(stage);
         //initialize skins
         mainSkin=new Skin();
@@ -57,42 +55,38 @@ public class GameOverScreen implements Screen {
 
         //initialize the play again button
         playAgainButton =new TextButton("Play again",mainSkin);
-        playAgainButton.setSize(400, 150);
+        playAgainButton.setSize(700, 150);
         playAgainButton.setPosition((stage.getWidth() / 2 - playAgainButton.getWidth() / 2), (float) (stage.getHeight() * 0.3 - playAgainButton.getHeight() / 2));
+
 
         //initialize the main menu button
         mainMenuButton =new TextButton("Main Menu",mainSkin);
-        mainMenuButton.setSize(400, 150);
-        mainMenuButton.setPosition((stage.getWidth() / 2 - playAgainButton.getWidth() / 2), (float) (stage.getHeight() * 0.1 - playAgainButton.getHeight() / 2));
+        mainMenuButton.setSize(700, 150);
+        mainMenuButton.setPosition((stage.getWidth() / 2 - playAgainButton.getWidth() / 2), (float) (stage.getHeight() * 0.2 - playAgainButton.getHeight() / 2));
 
-        //initialize label that shows "Your Timings:"
+
+
+        //initialize label that shows "Game Over"
         timetextLabel=new Label("Game Over",new Label.LabelStyle(scoreFont,scoreFont.getColor()));
-        if(stage.getWidth() < 540) {
-            timetextLabel.setFontScale(0.5f);
-            timetextLabel.setSize(300,100);
-        }
-        else{
-            timetextLabel.setFontScale(0.8f);
-            timetextLabel.setWrap(true);
-        }
-        Gdx.app.log("DodgeBoard", String.valueOf(stage.getWidth()));
-        //timetextLabel.setWrap(true);
-        timetextLabel.setPosition((stage.getWidth()/2-timetextLabel.getWidth()/2)+80,(float)(stage.getHeight()*0.7-timetextLabel.getHeight()/2));
+        timetextLabel.setWrap(true);
+        timetextLabel.setPosition((stage.getWidth()/2-timetextLabel.getWidth()/2),(float)(stage.getHeight()*0.7-timetextLabel.getHeight()/2));
 
         //initialize label that shows the score
-        scoreLabel=new Label(gamePlayTime,new Label.LabelStyle(scoreFont,scoreFont.getColor()));
-        scoreLabel.setSize(400,200);
-        scoreLabel.setFontScale(1.5f);
-        scoreLabel.setPosition((stage.getWidth() / 2 - scoreLabel.getWidth() / 2), (float) (stage.getHeight() * 0.6 - scoreLabel.getHeight() / 2));
+        scoreLabel=new Label(gamePlayTime,new Label.LabelStyle(scoreFont, scoreFont.getColor()));
+        scoreLabel.setSize(400, 200);
+        scoreLabel.setFontScale(2f);
+        scoreLabel.setPosition(((stage.getWidth() / 2 - scoreLabel.getWidth() / 2)-75), (float) (stage.getHeight() * 0.6 - scoreLabel.getHeight() / 2));
 
-        playAgainButton.addListener(new ClickListener(){
+
+        //start new game when play again button is tapped
+        playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.setScreen(new GameScreen(mainGame));
             }
         });
 
-        //add buttons to stage
+        //add buttons and laberls to stage
         stage.addActor(playAgainButton);
         stage.addActor(mainMenuButton);
         stage.addActor(scoreLabel);

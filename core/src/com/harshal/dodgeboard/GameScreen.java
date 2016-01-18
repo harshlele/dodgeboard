@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -123,8 +122,8 @@ public class GameScreen implements Screen,InputProcessor {
         boardPosMultiplier=1.25;
         f=new Finger();
         lastDroppedTime=0;
-        lastDroppedLimit=1f;
-        dropableYIncrement=10;
+        lastDroppedLimit=0.6f;
+        dropableYIncrement=25;
         isBoardShort=false;
         lives=5;
         isGameOver=false;
@@ -273,9 +272,22 @@ public class GameScreen implements Screen,InputProcessor {
                 }
             }
 
-            //update the game time
+            //if it has been 1 minute or more since the game has started,
+            //then increase the difficulty by dropping objects more frequently.
+            //Do the same after 3 minutes
+            if(officialTime.timeMilli > 60000){
+                lastDroppedLimit=0.5f;
+            }
+
+            if(officialTime.timeMilli > 180000){
+                lastDroppedLimit=0.4f;
+            }
+
+
+                //update the game time
             officialTime.timeStr=timer.getTimerValStr();
             officialTime.timeMilli=timer.getTimerValMSec(false);
+
 
 
         }
