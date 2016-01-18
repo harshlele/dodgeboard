@@ -279,8 +279,11 @@ public class GameScreen implements Screen,InputProcessor {
                 lastDroppedLimit=0.5f;
             }
 
-            if(officialTime.timeMilli > 180000){
+            if(officialTime.timeMilli > 120000){
                 lastDroppedLimit=0.4f;
+            }
+            if(officialTime.timeMilli > 180000){
+                lastDroppedLimit=0.3f;
             }
 
 
