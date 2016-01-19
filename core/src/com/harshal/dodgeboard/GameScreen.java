@@ -1,6 +1,7 @@
 package com.harshal.dodgeboard;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,9 +10,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.awt.TextComponent;
 
 
 /**
@@ -84,7 +93,12 @@ public class GameScreen implements Screen,InputProcessor {
     private GlyphLayout glyphLayout;
     //"official" time of system
     //this is the time that will be stored for saving high scores and such
-    Time officialTime;
+    private Time officialTime;
+    //stage,skin and button for the pause button
+    private Stage stage;
+    private Skin mainSkin;
+    private TextButton pauseButton;
+
 
 
     //store an instance of MainGame so that we can change screens from inside this screen
@@ -92,6 +106,7 @@ public class GameScreen implements Screen,InputProcessor {
         mainGame=game;
 
     }
+
 
 
 
@@ -131,22 +146,38 @@ public class GameScreen implements Screen,InputProcessor {
         font=new BitmapFont(Gdx.files.internal("fonts/font.fnt"));
         glyphLayout=new GlyphLayout();
         officialTime =new Time();
-
-
-
+        stage=new Stage(new FitViewport(1080,1920));
+        //initialize skins
+        mainSkin=new Skin();
+        mainSkin.addRegions(new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
+        mainSkin.add("default-font", new BitmapFont(Gdx.files.internal("fonts/font2.fnt")));
+        mainSkin.load(Gdx.files.internal("uiskin.json"));
+        //initialize the array
+        droppedArray =new Array<Dropable>();
         //class to measure time
         timer=new TimeKeeper();
         timer.initTimer();
 
-        Gdx.input.setInputProcessor(this);
 
-        //initialize the array
-        droppedArray =new Array<Dropable>();
+        //set the screen such that the stage gets all input events first.
+        InputMultiplexer multiplexer=new InputMultiplexer(stage,this);
+        Gdx.input.setInputProcessor(multiplexer);
+
+        //define the pause button and set its click listeners
+        pauseButton=new TextButton("Pause",mainSkin);
+        pauseButton.setSize(380, 120);
+        pauseButton.setPosition(720, 1600);
+        pauseButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainGame.setScreen(new PauseScreen(mainGame,officialTime.timeStr));
+            }
+        });
+
+        stage.addActor(pauseButton);
 
 
         timeMilli= timer.updateTime();
-
-
 
     }
 
@@ -291,7 +322,7 @@ public class GameScreen implements Screen,InputProcessor {
             officialTime.timeStr=timer.getTimerValStr();
             officialTime.timeMilli=timer.getTimerValMSec(false);
 
-
+            mainGame.storeScreen(this);
 
         }
 
@@ -303,7 +334,6 @@ public class GameScreen implements Screen,InputProcessor {
     public void render(float delta) {
 
         update(delta);
-
 
         //clear the screen
         Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -339,6 +369,8 @@ public class GameScreen implements Screen,InputProcessor {
 
         batch.end();
 
+        stage.act(delta);
+        stage.draw();
 
 
 
@@ -365,6 +397,10 @@ public class GameScreen implements Screen,InputProcessor {
             d.Tex.dispose();
             }
         }
+
+        //dispose the scene2D objects
+        stage.dispose();
+        mainSkin.dispose();
 
     }
 

@@ -10,7 +10,7 @@ import com.badlogic.gdx.Screen;
 public class MainGame extends Game {
 
     //GameScreen object that can be used to resume the game
-    private GameScreen storedScreen;
+    protected GameScreen storedScreen;
 
     public int screenWidth,screenHeight;
 
