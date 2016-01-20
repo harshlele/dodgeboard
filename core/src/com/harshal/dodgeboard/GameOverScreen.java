@@ -82,7 +82,7 @@ public class GameOverScreen implements Screen {
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                mainGame.setScreen(new GameScreen(mainGame));
+                mainGame.setScreen(new GameScreen(mainGame,false));
             }
         });
 

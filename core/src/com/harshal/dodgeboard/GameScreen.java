@@ -20,8 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.awt.TextComponent;
-
 
 /**
  * Created by harshal on 7/1/16.
@@ -36,6 +34,7 @@ public class GameScreen implements Screen,InputProcessor {
     //camera
     private OrthographicCamera camera ;
     private SpriteBatch batch;
+
     //texture for board
     private Texture boardTex;
     //Rectangle instance for holding info about the position of object
@@ -94,15 +93,19 @@ public class GameScreen implements Screen,InputProcessor {
     //"official" time of system
     //this is the time that will be stored for saving high scores and such
     private Time officialTime;
+
     //stage,skin and button for the pause button
     private Stage stage;
     private Skin mainSkin;
     private TextButton pauseButton;
 
 
+    //indicates whether the game is being set from a saved state
+    private boolean isGameSaved;
 
     //store an instance of MainGame so that we can change screens from inside this screen
-    public GameScreen(MainGame game){
+    public GameScreen(MainGame game,boolean gameSaved){
+        isGameSaved=gameSaved;
         mainGame=game;
 
     }
@@ -114,7 +117,6 @@ public class GameScreen implements Screen,InputProcessor {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        Gdx.app.log(TAG, "create");
 
         // initialize camera
         camera=new OrthographicCamera();
@@ -129,34 +131,65 @@ public class GameScreen implements Screen,InputProcessor {
         boardRect.height=60;
 
 
-        //store this class in the Game object so that it can be reused while resuming from a paused game
-        mainGame.storeScreen(this);
+        //if the game is being resumed,then load key variables from the saved state
+        if(isGameSaved){
 
-        //initialize variables
-        isFingerDown=false;
-        boardPosMultiplier=1.25;
-        f=new Finger();
-        lastDroppedTime=0;
-        lastDroppedLimit=0.6f;
-        dropableYIncrement=25;
-        isBoardShort=false;
-        lives=5;
-        isGameOver=false;
-        isGameRunning=true;
-        font=new BitmapFont(Gdx.files.internal("fonts/font.fnt"));
-        glyphLayout=new GlyphLayout();
-        officialTime =new Time();
-        stage=new Stage(new FitViewport(1080,1920));
+            isFingerDown=mainGame.storedState.isFingerDown;
+            boardPosMultiplier=mainGame.storedState.boardPosMultiplier;
+            f=mainGame.storedState.f;
+            lastDroppedTime=mainGame.storedState.lastDroppedTime;
+            lastDroppedLimit=mainGame.storedState.lastDroppedLimit;
+            dropableYIncrement=mainGame.storedState.dropableYIncrement;
+            isBoardShort=mainGame.storedState.isBoardShort;
+            lives=mainGame.storedState.lives;
+            isGameOver=mainGame.storedState.isGameOver;
+            isGameRunning=mainGame.storedState.isGameRunning;
+            if(!isGameRunning){
+                isGameRunning=true;
+            }
+            officialTime=mainGame.storedState.officialTime;
+            droppedArray=mainGame.storedState.droppedArray;
+            timer=mainGame.storedState.timer;
+            timeMilli=mainGame.storedState.timeMilli;
+            shortTime=mainGame.storedState.shortTime;
+
+
+
+        }
+        else {
+            //initialize variables
+            isFingerDown = false;
+            boardPosMultiplier = 1.25;
+            f = new Finger();
+            lastDroppedTime = 0;
+            lastDroppedLimit = 0.6f;
+            dropableYIncrement = 25;
+            isBoardShort = false;
+            lives = 5;
+            isGameOver = false;
+            isGameRunning = true;
+            officialTime = new Time();
+            //initialize the array
+            droppedArray = new Array<Dropable>();
+            //class to measure time
+            timer = new TimeKeeper();
+            timer.initTimer();
+            timeMilli = timer.updateTime();
+            shortTime = new TimeKeeper();
+
+        }
+
+
+        stage = new Stage(new FitViewport(1080, 1920));
+
+        font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"));
+        glyphLayout = new GlyphLayout();
+
         //initialize skins
         mainSkin=new Skin();
         mainSkin.addRegions(new TextureAtlas(Gdx.files.internal("uiskin.atlas")));
         mainSkin.add("default-font", new BitmapFont(Gdx.files.internal("fonts/font2.fnt")));
         mainSkin.load(Gdx.files.internal("uiskin.json"));
-        //initialize the array
-        droppedArray =new Array<Dropable>();
-        //class to measure time
-        timer=new TimeKeeper();
-        timer.initTimer();
 
 
         //set the screen such that the stage gets all input events first.
@@ -167,24 +200,24 @@ public class GameScreen implements Screen,InputProcessor {
         pauseButton=new TextButton("Pause",mainSkin);
         pauseButton.setSize(380, 120);
         pauseButton.setPosition(720, 1600);
-        pauseButton.addListener(new ClickListener(){
+        pauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                mainGame.setScreen(new PauseScreen(mainGame,officialTime.timeStr));
+                isGameOver = false;
+                isGameRunning = false;
+                SavedState s=saveState();
+                mainGame.storeState(s);
+                mainGame.setScreen(new PauseScreen(mainGame, officialTime.timeStr));
+
             }
         });
 
         stage.addActor(pauseButton);
 
-
-        timeMilli= timer.updateTime();
-
     }
 
     //Update positions of player, and other objects
     public void update(float delta){
-
-
 
         //check for things such as whether the game is paused outside the main if statement, and control
         //whether the game updates itself using isGameRunning
@@ -196,7 +229,7 @@ public class GameScreen implements Screen,InputProcessor {
 
 
         if(isGameOver){
-            mainGame.storeScreen(this);
+
             mainGame.setScreen(new GameOverScreen(officialTime.timeStr,mainGame));
         }
 
@@ -275,7 +308,6 @@ public class GameScreen implements Screen,InputProcessor {
                             if (boardRect.width == 360) {
                                 boardRect.width = 240;
                                 isBoardShort = true;
-                                shortTime = new TimeKeeper();
                                 shortTime.initTimer();
                             }
                         }
@@ -296,7 +328,7 @@ public class GameScreen implements Screen,InputProcessor {
             //If the board has been shortened,check if 30 seconds have elapsed since that happened.
             //If more than 30 seconds have elapsed, lengthen the board again
             if (isBoardShort) {
-                if (shortTime.getTimerValMSec(true) >= 30000) {
+                if (shortTime.getTimerValMSec(true) >= 15000) {
                     boardRect.width = 360;
                     isBoardShort = false;
                     shortTime = null;
@@ -306,23 +338,26 @@ public class GameScreen implements Screen,InputProcessor {
             //if it has been 1 minute or more since the game has started,
             //then increase the difficulty by dropping objects more frequently.
             //Do the same after 3 minutes
-            if(officialTime.timeMilli > 60000){
+            if(officialTime.timeMilli > 30000){
                 lastDroppedLimit=0.5f;
             }
 
-            if(officialTime.timeMilli > 120000){
+            if(officialTime.timeMilli > 60000){
                 lastDroppedLimit=0.4f;
             }
-            if(officialTime.timeMilli > 180000){
+            if(officialTime.timeMilli > 90000){
+                dropableYIncrement=30;
+            }
+            if(officialTime.timeMilli > 120000){
                 lastDroppedLimit=0.3f;
             }
+
 
 
                 //update the game time
             officialTime.timeStr=timer.getTimerValStr();
             officialTime.timeMilli=timer.getTimerValMSec(false);
 
-            mainGame.storeScreen(this);
 
         }
 
@@ -378,13 +413,6 @@ public class GameScreen implements Screen,InputProcessor {
 
 
     @Override
-    public void pause() {
-        Gdx.app.log(TAG,"pause");
-
-    }
-
-
-    @Override
     public void dispose() {
         //dispose the SpriteBatch
         batch.dispose();
@@ -408,7 +436,7 @@ public class GameScreen implements Screen,InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         isFingerDown = true;
-        f.setNoDiffLoc(screenX,screenY);
+        f.setNoDiffLoc(screenX, screenY);
         Gdx.app.log(TAG, "Finger Down: " + String.valueOf(f.Rect.x) + "," + String.valueOf(f.Rect.y));
         return true;
     }
@@ -416,7 +444,7 @@ public class GameScreen implements Screen,InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         isFingerDown=false;
-        f.setNewLoc(screenX,screenY);
+        f.setNewLoc(screenX, screenY);
         Gdx.app.log(TAG, "Finger Up: " + String.valueOf(f.Rect.x) + "," + String.valueOf(f.Rect.y));
         return true;
     }
@@ -429,7 +457,34 @@ public class GameScreen implements Screen,InputProcessor {
     }
 
 
+    @Override
+    public void pause() {
+        Gdx.app.log(TAG,"pause");
 
+    }
+
+    //save the state of the game
+    public SavedState saveState(){
+        SavedState s = new SavedState();
+        s.isFingerDown=isFingerDown;
+        s.boardPosMultiplier=boardPosMultiplier;
+        s.dropableCode=dropableCode;
+        s.dropableYIncrement=dropableYIncrement;
+        s.droppedArray=droppedArray;
+        s.f=f;
+        s.timer=timer;
+        s.timeMilli=timeMilli;
+        s.lastDroppedLimit=lastDroppedLimit;
+        s.lastDroppedTime=lastDroppedTime;
+        s.isBoardShort=isBoardShort;
+        s.shortTime=shortTime;
+        s.lives=lives;
+        s.isGameOver=isGameOver;
+        s.isGameRunning=isGameRunning;
+        s.officialTime=officialTime;
+        return s;
+
+    }
 
 
     /*CURRENTLY UNUSED METHODS*/
@@ -447,6 +502,8 @@ public class GameScreen implements Screen,InputProcessor {
     public void hide() {
 
     }
+
+
 
 
 

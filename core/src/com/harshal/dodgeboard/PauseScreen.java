@@ -67,7 +67,7 @@ public class PauseScreen implements Screen {
         //initialize label that shows "Game Over"
         timetextLabel=new Label("Current Timings",new Label.LabelStyle(scoreFont,scoreFont.getColor()));
         timetextLabel.setWrap(true);
-        timetextLabel.setPosition((stage.getWidth()/2-timetextLabel.getWidth()/2),(float)(stage.getHeight()*0.7-timetextLabel.getHeight()/2));
+        timetextLabel.setPosition((stage.getWidth() / 2 - timetextLabel.getWidth() / 2), (float) (stage.getHeight() * 0.7 - timetextLabel.getHeight() / 2));
 
         //initialize label that shows the score
         scoreLabel=new Label(gamePlayTime,new Label.LabelStyle(scoreFont, scoreFont.getColor()));
@@ -75,10 +75,19 @@ public class PauseScreen implements Screen {
         scoreLabel.setFontScale(2f);
         scoreLabel.setPosition(((stage.getWidth() / 2 - scoreLabel.getWidth() / 2) - 75), (float) (stage.getHeight() * 0.6 - scoreLabel.getHeight() / 2));
 
+        //when resume button is clicked, set the same instance of GameScreen as there was before the pause button was pressed
         resumeButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                mainGame.setScreen(mainGame.storedScreen);
+                mainGame.setScreen(new GameScreen(mainGame,true));
+            }
+        });
+
+        mainMenuButton.addListener(new ClickListener(){
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainGame.setScreen(new MainMenuScreen(mainGame));
             }
         });
 
