@@ -5,7 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+
 
 /**
  * Created by harshal on 8/1/16.
@@ -86,6 +88,9 @@ class SavedState {
     //"official" time of system
     //this is the time that will be stored for saving high scores and such
     protected Time officialTime;
+
+    //Rectangle instance that saves location and dimensions of the board
+    protected Rectangle boardRect=new Rectangle();
 
 
 

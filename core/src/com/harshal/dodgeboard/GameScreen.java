@@ -124,15 +124,18 @@ public class GameScreen implements Screen,InputProcessor {
 
         //define the board and its starting position
         boardTex =new Texture(Gdx.files.internal("board360.png"));
-        boardRect=new Rectangle();
-        boardRect.x=360;
-        boardRect.y=556;
-        boardRect.width=360;
-        boardRect.height=60;
 
 
         //if the game is being resumed,then load key variables from the saved state
         if(isGameSaved){
+
+
+            boardRect=mainGame.storedState.boardRect;
+            boardRect.x=mainGame.storedState.boardRect.x;
+            boardRect.y=mainGame.storedState.boardRect.y;
+            boardRect.width=mainGame.storedState.boardRect.width;
+            boardRect.height=mainGame.storedState.boardRect.height;
+
 
             isFingerDown=mainGame.storedState.isFingerDown;
             boardPosMultiplier=mainGame.storedState.boardPosMultiplier;
@@ -157,6 +160,14 @@ public class GameScreen implements Screen,InputProcessor {
 
         }
         else {
+
+            boardRect=new Rectangle();
+            boardRect.x=360;
+            boardRect.y=556;
+            boardRect.width=360;
+            boardRect.height=60;
+
+
             //initialize variables
             isFingerDown = false;
             boardPosMultiplier = 1.25;
@@ -466,6 +477,8 @@ public class GameScreen implements Screen,InputProcessor {
     //save the state of the game
     public SavedState saveState(){
         SavedState s = new SavedState();
+        s.boardRect=boardRect;
+
         s.isFingerDown=isFingerDown;
         s.boardPosMultiplier=boardPosMultiplier;
         s.dropableCode=dropableCode;
