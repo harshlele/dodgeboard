@@ -79,6 +79,7 @@ public class TimeKeeper {
 class Time {
     protected long timeMilli;
     protected String timeStr;
+    protected long timeSnap;
 
 
 

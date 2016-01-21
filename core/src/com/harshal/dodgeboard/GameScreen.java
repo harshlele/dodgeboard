@@ -75,9 +75,6 @@ public class GameScreen implements Screen,InputProcessor {
     private int dropableCode;
     //boolean indicating whether board has been shortened.
     private boolean isBoardShort;
-    //Timer to keep track of time since board was shortened so that we can lengthen the board again
-    //after 30 seconds
-    private TimeKeeper shortTime;
     //No of lives
     private int lives;
     //Game over texture
@@ -154,7 +151,6 @@ public class GameScreen implements Screen,InputProcessor {
             droppedArray=mainGame.storedState.droppedArray;
             timer=mainGame.storedState.timer;
             timeMilli=mainGame.storedState.timeMilli;
-            shortTime=mainGame.storedState.shortTime;
 
 
 
@@ -186,7 +182,6 @@ public class GameScreen implements Screen,InputProcessor {
             timer = new TimeKeeper();
             timer.initTimer();
             timeMilli = timer.updateTime();
-            shortTime = new TimeKeeper();
 
         }
 
@@ -319,7 +314,7 @@ public class GameScreen implements Screen,InputProcessor {
                             if (boardRect.width == 360) {
                                 boardRect.width = 240;
                                 isBoardShort = true;
-                                shortTime.initTimer();
+                                officialTime.timeSnap=timer.getTimerValMSec(true);
                             }
                         }
                         else if(d.TYPE.equals(Dropable.NORMAL)){
@@ -339,10 +334,10 @@ public class GameScreen implements Screen,InputProcessor {
             //If the board has been shortened,check if 30 seconds have elapsed since that happened.
             //If more than 30 seconds have elapsed, lengthen the board again
             if (isBoardShort) {
-                if (shortTime.getTimerValMSec(true) >= 15000) {
+                if (timer.getTimerValMSec(true) - officialTime.timeSnap >= 15000) {
                     boardRect.width = 360;
                     isBoardShort = false;
-                    shortTime = null;
+                    officialTime.timeSnap=0;
                 }
             }
 
@@ -490,7 +485,6 @@ public class GameScreen implements Screen,InputProcessor {
         s.lastDroppedLimit=lastDroppedLimit;
         s.lastDroppedTime=lastDroppedTime;
         s.isBoardShort=isBoardShort;
-        s.shortTime=shortTime;
         s.lives=lives;
         s.isGameOver=isGameOver;
         s.isGameRunning=isGameRunning;
