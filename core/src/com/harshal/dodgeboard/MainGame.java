@@ -2,6 +2,7 @@ package com.harshal.dodgeboard;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -91,6 +92,9 @@ class SavedState {
 
     //Rectangle instance that saves location and dimensions of the board
     protected Rectangle boardRect=new Rectangle();
+
+    //background music
+    protected Music bMusic;
 
 
 

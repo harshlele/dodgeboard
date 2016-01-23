@@ -1,9 +1,11 @@
 package com.harshal.dodgeboard;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.audio.Music;
 
 
 /**
@@ -90,6 +93,8 @@ public class GameScreen implements Screen,InputProcessor {
     //"official" time of system
     //this is the time that will be stored for saving high scores and such
     private Time officialTime;
+    //Background music
+    private Music bMusic;
 
     //stage,skin and button for the pause button
     private Stage stage;
@@ -151,6 +156,7 @@ public class GameScreen implements Screen,InputProcessor {
             droppedArray=mainGame.storedState.droppedArray;
             timer=mainGame.storedState.timer;
             timeMilli=mainGame.storedState.timeMilli;
+            bMusic=mainGame.storedState.bMusic;
 
 
 
@@ -169,7 +175,7 @@ public class GameScreen implements Screen,InputProcessor {
             boardPosMultiplier = 1.25;
             f = new Finger();
             lastDroppedTime = 0;
-            lastDroppedLimit = 0.6f;
+            lastDroppedLimit = 0.5f;
             dropableYIncrement = 25;
             isBoardShort = false;
             lives = 5;
@@ -182,6 +188,7 @@ public class GameScreen implements Screen,InputProcessor {
             timer = new TimeKeeper();
             timer.initTimer();
             timeMilli = timer.updateTime();
+            bMusic= Gdx.audio.newMusic(Gdx.files.internal("Music/bMusic.ogg"));
 
         }
 
@@ -211,7 +218,8 @@ public class GameScreen implements Screen,InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 isGameOver = false;
                 isGameRunning = false;
-                SavedState s=saveState();
+                bMusic.pause();
+                SavedState s = saveState();
                 mainGame.storeState(s);
                 mainGame.setScreen(new PauseScreen(mainGame, officialTime.timeStr));
 
@@ -219,7 +227,8 @@ public class GameScreen implements Screen,InputProcessor {
         });
 
         stage.addActor(pauseButton);
-
+        bMusic.setLooping(true);
+        bMusic.play();
     }
 
     //Update positions of player, and other objects
@@ -235,7 +244,7 @@ public class GameScreen implements Screen,InputProcessor {
 
 
         if(isGameOver){
-
+            bMusic.stop();
             mainGame.setScreen(new GameOverScreen(officialTime.timeStr,mainGame));
         }
 
@@ -345,14 +354,14 @@ public class GameScreen implements Screen,InputProcessor {
             //then increase the difficulty by dropping objects more frequently.
             //Do the same after 3 minutes
             if(officialTime.timeMilli > 30000){
-                lastDroppedLimit=0.5f;
+                dropableYIncrement=30;
             }
 
             if(officialTime.timeMilli > 60000){
                 lastDroppedLimit=0.4f;
             }
             if(officialTime.timeMilli > 90000){
-                dropableYIncrement=30;
+                dropableYIncrement=35;
             }
             if(officialTime.timeMilli > 120000){
                 lastDroppedLimit=0.3f;
@@ -435,6 +444,7 @@ public class GameScreen implements Screen,InputProcessor {
         //dispose the scene2D objects
         stage.dispose();
         mainSkin.dispose();
+        bMusic.dispose();
 
     }
 
@@ -489,6 +499,7 @@ public class GameScreen implements Screen,InputProcessor {
         s.isGameOver=isGameOver;
         s.isGameRunning=isGameRunning;
         s.officialTime=officialTime;
+        s.bMusic=bMusic;
         return s;
 
     }
