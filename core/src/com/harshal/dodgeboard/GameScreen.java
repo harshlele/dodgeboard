@@ -219,6 +219,7 @@ public class GameScreen implements Screen,InputProcessor {
                 isGameOver = false;
                 isGameRunning = false;
                 bMusic.pause();
+                mainGame.clickSound.play();
                 SavedState s = saveState();
                 mainGame.storeState(s);
                 mainGame.setScreen(new PauseScreen(mainGame, officialTime.timeStr));
@@ -228,6 +229,7 @@ public class GameScreen implements Screen,InputProcessor {
 
         stage.addActor(pauseButton);
         bMusic.setLooping(true);
+        bMusic.setVolume(0.5f);
         bMusic.play();
     }
 

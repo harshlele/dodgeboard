@@ -82,6 +82,7 @@ public class GameOverScreen implements Screen {
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                mainGame.clickSound.play();
                 mainGame.setScreen(new GameScreen(mainGame,false));
             }
         });
@@ -89,6 +90,7 @@ public class GameOverScreen implements Screen {
         mainMenuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                mainGame.clickSound.play();
                 mainGame.setScreen(new MainMenuScreen(mainGame));
             }
         });

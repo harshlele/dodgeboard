@@ -1,8 +1,10 @@
 package com.harshal.dodgeboard;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -17,21 +19,23 @@ import com.badlogic.gdx.utils.Array;
 public class MainGame extends Game {
 
 
-
+    //SavedState instance used to resume the game from pause screen
     protected SavedState storedState;
-
-
+    //the common Sound that plays when a button is pressed
+    protected Sound clickSound;
 
     public int screenWidth,screenHeight;
 
     public MainGame(int width,int height) {
        screenWidth=width;
        screenHeight=height;
+       //clickSound= Gdx.audio.newSound(Gdx.files.internal("Music/clickSound.ogg"));
     }
 
     //create method is fired when the game begins
     @Override
     public void create() {
+        clickSound= Gdx.audio.newSound(Gdx.files.internal("Music/clickSound.ogg"));
         setScreen(new MainMenuScreen(this));
     }
 
@@ -39,11 +43,15 @@ public class MainGame extends Game {
         storedState=toStore;
     }
 
-
-
-
-
+    @Override
+    public void dispose() {
+        clickSound.dispose();
+        super.dispose();
+    }
 }
+
+
+
 
 
 //a class that stores data about the game so that the game can be resumed from a certain state
