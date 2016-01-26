@@ -102,6 +102,9 @@ public class GameScreen implements Screen,InputProcessor {
 
     //Sound that is played when player losses a life
     private Sound lifeDown;
+
+    //Game over sound
+    private Sound overSound;
     
     //indicates whether lifeDown sound is to be played
     private boolean playLifeDownSound;
@@ -196,6 +199,8 @@ public class GameScreen implements Screen,InputProcessor {
         lifeDown =Gdx.audio.newSound(Gdx.files.internal("Music/levelDown.ogg"));
         playLifeDownSound =false;
 
+        overSound=Gdx.audio.newSound(Gdx.files.internal("Music/overSound.ogg"));
+
 
         stage = new Stage(new FitViewport(1080, 1920));
 
@@ -253,6 +258,7 @@ public class GameScreen implements Screen,InputProcessor {
 
         if(isGameOver){
             bMusic.stop();
+            overSound.play();
             mainGame.setScreen(new GameOverScreen(officialTime.timeStr,mainGame));
         }
 
@@ -462,6 +468,7 @@ public class GameScreen implements Screen,InputProcessor {
         mainSkin.dispose();
         bMusic.dispose();
         lifeDown.dispose();
+        overSound.dispose();
     }
 
 
