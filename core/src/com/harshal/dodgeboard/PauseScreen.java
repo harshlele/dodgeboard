@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -80,7 +81,13 @@ public class PauseScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                mainGame.setScreen(new GameScreen(mainGame,true));
+                stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.5f),Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainGame.setScreen(new GameScreen(mainGame,true));
+                    }
+                })));
+                //mainGame.setScreen(new GameScreen(mainGame,true));
             }
         });
 
@@ -89,7 +96,13 @@ public class PauseScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                mainGame.setScreen(new MainMenuScreen(mainGame));
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.5f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainGame.setScreen(new MainMenuScreen(mainGame));
+                    }
+                })));
+                //mainGame.setScreen(new MainMenuScreen(mainGame));
             }
         });
 

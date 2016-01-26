@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+
+import javax.swing.Action;
 
 /**
  * Created by harshal on 14/1/16.
@@ -84,7 +88,13 @@ public class GameOverScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                mainGame.setScreen(new GameScreen(mainGame,false));
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.5f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainGame.setScreen(new GameScreen(mainGame, false));
+                    }
+                })));
+                //mainGame.setScreen(new GameScreen(mainGame,false));
             }
         });
 
@@ -92,7 +102,13 @@ public class GameOverScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                mainGame.setScreen(new MainMenuScreen(mainGame));
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.5f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainGame.setScreen(new MainMenuScreen(mainGame));
+                    }
+                })));
+                //mainGame.setScreen(new MainMenuScreen(mainGame));
             }
         });
 
