@@ -1,11 +1,11 @@
 package com.harshal.dodgeboard;
 
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,16 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.audio.Music;
 
 
 /**
  * Created by harshal on 7/1/16.
  * Screen for the game
- *
- * THIS RENDERS GameObsolete OBSOLETE
- * GameObsolete WILL BE KEPT FOR SOMETIME JUST IN CASE SOMETHING
- * WRONG HAPPENS WITH THIS SCREEN
  */
 public class GameScreen implements Screen,InputProcessor {
 
@@ -105,6 +100,11 @@ public class GameScreen implements Screen,InputProcessor {
     //indicates whether the game is being set from a saved state
     private boolean isGameSaved;
 
+    //Sound that is played when player losses a life
+    private Sound lifeDown;
+    
+    //indicates whether lifeDown sound is to be played
+    private boolean playLifeDownSound;
     //store an instance of MainGame so that we can change screens from inside this screen
     public GameScreen(MainGame game,boolean gameSaved){
         isGameSaved=gameSaved;
@@ -160,6 +160,7 @@ public class GameScreen implements Screen,InputProcessor {
 
 
 
+
         }
         else {
 
@@ -192,6 +193,9 @@ public class GameScreen implements Screen,InputProcessor {
 
         }
 
+        lifeDown =Gdx.audio.newSound(Gdx.files.internal("Music/levelDown.ogg"));
+        playLifeDownSound =false;
+
 
         stage = new Stage(new FitViewport(1080, 1920));
 
@@ -216,9 +220,9 @@ public class GameScreen implements Screen,InputProcessor {
         pauseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                bMusic.pause();
                 isGameOver = false;
                 isGameRunning = false;
-                bMusic.pause();
                 mainGame.clickSound.play();
                 SavedState s = saveState();
                 mainGame.storeState(s);
@@ -227,9 +231,11 @@ public class GameScreen implements Screen,InputProcessor {
             }
         });
 
+
+
         stage.addActor(pauseButton);
         bMusic.setLooping(true);
-        bMusic.setVolume(0.5f);
+        bMusic.setVolume(0.3f);
         bMusic.play();
     }
 
@@ -291,8 +297,8 @@ public class GameScreen implements Screen,InputProcessor {
             if (lastDroppedTime >= lastDroppedLimit) {
                 dropableCode = (int) (Math.random() * 100);
                 Dropable d;
-                //With this,theoritically,10% of all dropped items should be cut spheres
-                if (dropableCode > 10) {
+                //With this,theoritically,5% of all dropped items should be cut spheres
+                if (dropableCode > 5) {
                     d = new Dropable(Dropable.NORMAL);
                 } else {
                     d = new Dropable(Dropable.CUT);
@@ -330,6 +336,7 @@ public class GameScreen implements Screen,InputProcessor {
                         }
                         else if(d.TYPE.equals(Dropable.NORMAL)){
                             lives--;
+                            playLifeDownSound=true;
                         }
                         droppedArray.removeIndex(i);
                         droppedArray.insert(i, null);
@@ -343,7 +350,7 @@ public class GameScreen implements Screen,InputProcessor {
             }
 
             //If the board has been shortened,check if 30 seconds have elapsed since that happened.
-            //If more than 30 seconds have elapsed, lengthen the board again
+            //If more than 15 seconds have elapsed, lengthen the board again
             if (isBoardShort) {
                 if (timer.getTimerValMSec(true) - officialTime.timeSnap >= 15000) {
                     boardRect.width = 360;
@@ -416,8 +423,15 @@ public class GameScreen implements Screen,InputProcessor {
 
         glyphLayout.setText(font, "Lives:" + String.valueOf(lives));
         font.draw(batch, glyphLayout, 1080 - glyphLayout.width, 1920 - glyphLayout.height);
-        glyphLayout.setText(font,officialTime.timeStr);
+        glyphLayout.setText(font, officialTime.timeStr);
         font.draw(batch,glyphLayout,10,1920-glyphLayout.height);
+        if(playLifeDownSound){
+            bMusic.setVolume(0.1f);
+            lifeDown.play();
+            bMusic.setVolume(0.3f);
+            playLifeDownSound=false;
+        }
+
 
         batch.end();
 
@@ -443,11 +457,11 @@ public class GameScreen implements Screen,InputProcessor {
             }
         }
 
-        //dispose the scene2D objects
+        //dispose the scene2D objects,and audio objects
         stage.dispose();
         mainSkin.dispose();
         bMusic.dispose();
-
+        lifeDown.dispose();
     }
 
 
