@@ -54,7 +54,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.5f),Actions.run(new Runnable() {
+                stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.3f),Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         mainGame.setScreen(new GameScreen(mainGame,false));
@@ -69,6 +69,8 @@ public class MainMenuScreen implements Screen {
 
         // add actors to stage
         stage.addActor(playButton);
+        stage.addAction(Actions.sequence(Actions.alpha(0),Actions.fadeIn(0.3f)));
+
 
     }
 

@@ -80,7 +80,7 @@ public class GameOverScreen implements Screen {
         scoreLabel=new Label(gamePlayTime,new Label.LabelStyle(scoreFont, scoreFont.getColor()));
         scoreLabel.setSize(400, 200);
         scoreLabel.setFontScale(2f);
-        scoreLabel.setPosition(((stage.getWidth() / 2 - scoreLabel.getWidth() / 2)-75), (float) (stage.getHeight() * 0.6 - scoreLabel.getHeight() / 2));
+        scoreLabel.setPosition(((stage.getWidth() / 2 - scoreLabel.getWidth() / 2) - 75), (float) (stage.getHeight() * 0.6 - scoreLabel.getHeight() / 2));
 
 
         //start new game when play again button is tapped
@@ -88,7 +88,7 @@ public class GameOverScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.5f), Actions.run(new Runnable() {
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         mainGame.setScreen(new GameScreen(mainGame, false));
@@ -98,11 +98,11 @@ public class GameOverScreen implements Screen {
             }
         });
 
-        mainMenuButton.addListener(new ClickListener(){
+        mainMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.5f), Actions.run(new Runnable() {
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         mainGame.setScreen(new MainMenuScreen(mainGame));
@@ -118,6 +118,7 @@ public class GameOverScreen implements Screen {
         stage.addActor(scoreLabel);
         stage.addActor(timetextLabel);
 
+        stage.addAction(Actions.sequence(Actions.alpha(0),Actions.fadeIn(0.3f)));
     }
 
     @Override

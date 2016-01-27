@@ -81,7 +81,7 @@ public class PauseScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.5f),Actions.run(new Runnable() {
+                stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.3f),Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         mainGame.setScreen(new GameScreen(mainGame,true));
@@ -96,7 +96,7 @@ public class PauseScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.5f), Actions.run(new Runnable() {
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
                     public void run() {
                         mainGame.setScreen(new MainMenuScreen(mainGame));
@@ -112,6 +112,8 @@ public class PauseScreen implements Screen {
         stage.addActor(mainMenuButton);
         stage.addActor(scoreLabel);
         stage.addActor(timetextLabel);
+
+        stage.addAction(Actions.sequence(Actions.alpha(0),Actions.fadeIn(0.3f)));
 
 
     }
