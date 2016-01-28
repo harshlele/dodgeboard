@@ -3,11 +3,13 @@ package com.harshal.dodgeboard;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -23,6 +25,8 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private Skin mainSkin;
     private TextButton playButton;
+    private Texture titleTex;
+    private Image titleImg;
 
     //instance of MainGame that will be used to change the screen
     private MainGame mainGame;
@@ -64,11 +68,18 @@ public class MainMenuScreen implements Screen {
                 //mainGame.setScreen(new GameScreen(mainGame,false));
             }
         });
+        //initialise the title Texture and Actor
+        titleTex=new Texture(Gdx.files.internal("title.png"));
+        titleImg=new Image(titleTex);
+        titleImg.setSize(titleTex.getWidth(),titleTex.getHeight());
+        titleImg.setPosition(0,1400);
+
 
 
 
         // add actors to stage
         stage.addActor(playButton);
+        stage.addActor(titleImg);
         stage.addAction(Actions.sequence(Actions.alpha(0),Actions.fadeIn(0.3f)));
 
 
