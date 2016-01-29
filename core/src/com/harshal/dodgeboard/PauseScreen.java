@@ -25,6 +25,9 @@ public class PauseScreen implements Screen {
     private TextButton resumeButton,mainMenuButton;
     private Label scoreLabel,timetextLabel;
     private BitmapFont scoreFont;
+    //variables to measure amount of time spent in pause screen,
+    //is sent to GameScreen when resuming the game
+    private long initTime,exitTime;
 
 
     //String that stores the game time
@@ -37,7 +40,9 @@ public class PauseScreen implements Screen {
     public PauseScreen(MainGame mainGame,String gamePlayTime) {
         this.gamePlayTime=gamePlayTime;
         this.mainGame = mainGame;
+        initTime=System.currentTimeMillis();
     }
+
 
 
     @Override
@@ -84,7 +89,8 @@ public class PauseScreen implements Screen {
                 stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.3f),Actions.run(new Runnable() {
                     @Override
                     public void run() {
-                        mainGame.setScreen(new GameScreen(mainGame,true));
+                        exitTime=System.currentTimeMillis();
+                        mainGame.setScreen(new GameScreen(mainGame,true,exitTime-initTime));
                     }
                 })));
                 //mainGame.setScreen(new GameScreen(mainGame,true));

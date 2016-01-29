@@ -75,8 +75,6 @@ public class GameScreen implements Screen,InputProcessor {
     private boolean isBoardShort;
     //No of lives
     private int lives;
-    //Game over texture
-    private Texture gameOverTex;
     //boolean indicating whether game is over
     private boolean isGameOver;
     //boolean indicating whether game is running
@@ -108,14 +106,15 @@ public class GameScreen implements Screen,InputProcessor {
     
     //indicates whether lifeDown sound is to be played
     private boolean playLifeDownSound;
+
+    //time spent in last pause screen,is subtracted from the game time to keep it updated.
+    long pauseScreenTime;
     //store an instance of MainGame so that we can change screens from inside this screen
-    public GameScreen(MainGame game,boolean gameSaved){
+    public GameScreen(MainGame game,boolean gameSaved,long pauseScreenTime){
         isGameSaved=gameSaved;
         mainGame=game;
-
+        this.pauseScreenTime=pauseScreenTime;
     }
-
-
 
 
 
@@ -156,6 +155,7 @@ public class GameScreen implements Screen,InputProcessor {
                 isGameRunning=true;
             }
             officialTime=mainGame.storedState.officialTime;
+            officialTime.pauseScreenTime+=pauseScreenTime;
             droppedArray=mainGame.storedState.droppedArray;
             timer=mainGame.storedState.timer;
             timeMilli=mainGame.storedState.timeMilli;
@@ -186,12 +186,13 @@ public class GameScreen implements Screen,InputProcessor {
             isGameOver = false;
             isGameRunning = true;
             officialTime = new Time();
+            officialTime.pauseScreenTime+=pauseScreenTime;
             //initialize the array
             droppedArray = new Array<Dropable>();
             //class to measure time
             timer = new TimeKeeper();
             timer.initTimer();
-            timeMilli = timer.updateTime();
+            timeMilli = timer.updateTime(false,0);
             bMusic= Gdx.audio.newMusic(Gdx.files.internal("Music/bMusic.ogg"));
 
         }
@@ -384,7 +385,8 @@ public class GameScreen implements Screen,InputProcessor {
 
 
 
-                //update the game time
+            //update the game time
+            timer.updateTime(true,officialTime.pauseScreenTime);
             officialTime.timeStr=timer.getTimerValStr();
             officialTime.timeMilli=timer.getTimerValMSec(false);
 

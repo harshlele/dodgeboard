@@ -61,7 +61,7 @@ public class MainMenuScreen implements Screen {
                 stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.3f),Actions.run(new Runnable() {
                     @Override
                     public void run() {
-                        mainGame.setScreen(new GameScreen(mainGame,false));
+                        mainGame.setScreen(new GameScreen(mainGame,false,0));
                     }
                 })));
 

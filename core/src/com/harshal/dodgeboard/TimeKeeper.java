@@ -13,7 +13,7 @@ public class TimeKeeper {
     private long latestTime;
 
     //timer value
-    private long timerVal;
+    protected long timerVal;
 
 
     //start storing time
@@ -23,8 +23,11 @@ public class TimeKeeper {
     }
 
     //update time
-    public long updateTime(){
+    public long updateTime(boolean toCut,long cutVal){
         latestTime=System.currentTimeMillis();
+        if(toCut){
+            latestTime-=cutVal;
+        }
         return latestTime;
 
     }
@@ -34,17 +37,18 @@ public class TimeKeeper {
     //this is used while updating the time in every frame
     public long getTimerValMSec(boolean updateTime){
         if(updateTime) {
-            updateTime();
+            updateTime(false,0);
         }
         timerVal=latestTime-initTime;
         return timerVal;
     }
 
 
+
     //get timer value formatted in min:sec type as a string
     public String getTimerValStr(){
         String val="";
-        getTimerValMSec(true);
+        getTimerValMSec(false);
         if(timerVal/1000 >= 60){
             long timerValSec=timerVal/1000;
             int timeMin=(int)timerValSec/60;
@@ -79,8 +83,10 @@ public class TimeKeeper {
 class Time {
     protected long timeMilli;
     protected String timeStr;
+    //variable to 'snapshot'a certain value of time,used to store the time since board was shortened
     protected long timeSnap;
-
+    //amount of time spent in pause screens, is subtracted from the game time.
+    protected long pauseScreenTime=0;
 
 
 
