@@ -36,7 +36,7 @@ public class MainGame extends Game {
     @Override
     public void create() {
         clickSound= Gdx.audio.newSound(Gdx.files.internal("Music/clickSound.ogg"));
-        setScreen(new MainMenuScreen(this));
+        setScreen(new SplashScreen(this));
     }
 
     public void storeState(SavedState toStore){

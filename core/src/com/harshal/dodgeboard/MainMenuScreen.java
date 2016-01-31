@@ -52,7 +52,7 @@ public class MainMenuScreen implements Screen {
         playButton.setSize(700, 150);
         playButton.setPosition((stage.getWidth() / 2 - playButton.getWidth() / 2), (float) (stage.getHeight() * 0.6 - playButton.getHeight() / 2));
 
-        //initialise play button
+        //initialise about button
         aboutButton=new TextButton("About",mainSkin);
         aboutButton.setSize(700, 150);
         aboutButton.setPosition((stage.getWidth() / 2 - aboutButton.getWidth() / 2), (float) (stage.getHeight() * 0.4 - aboutButton.getHeight() / 2));
@@ -104,7 +104,6 @@ public class MainMenuScreen implements Screen {
         stage.addActor(playButton);
         stage.addActor(aboutButton);
         stage.addActor(titleImg);
-        stage.addAction(Actions.sequence(Actions.alpha(0),Actions.fadeIn(0.3f)));
 
 
     }
