@@ -24,7 +24,7 @@ public class MainMenuScreen implements Screen {
     //stage and actors
     private Stage stage;
     private Skin mainSkin;
-    private TextButton playButton;
+    private TextButton playButton,aboutButton;
     private Texture titleTex;
     private Image titleImg;
 
@@ -52,33 +52,57 @@ public class MainMenuScreen implements Screen {
         playButton.setSize(700, 150);
         playButton.setPosition((stage.getWidth() / 2 - playButton.getWidth() / 2), (float) (stage.getHeight() * 0.6 - playButton.getHeight() / 2));
 
+        //initialise play button
+        aboutButton=new TextButton("About",mainSkin);
+        aboutButton.setSize(700, 150);
+        aboutButton.setPosition((stage.getWidth() / 2 - aboutButton.getWidth() / 2), (float) (stage.getHeight() * 0.4 - aboutButton.getHeight() / 2));
+
+
         //start game when play button is pressed
         playButton.addListener(new ClickListener() {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mainGame.clickSound.play();
-                stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.3f),Actions.run(new Runnable() {
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
                     public void run() {
-                        mainGame.setScreen(new GameScreen(mainGame,false,0));
+                        mainGame.setScreen(new GameScreen(mainGame, false, 0));
                     }
                 })));
 
                 //mainGame.setScreen(new GameScreen(mainGame,false));
             }
         });
+
+        aboutButton.addListener(new ClickListener(){
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainGame.clickSound.play();
+                stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainGame.setScreen(new AboutScreen(mainGame));
+                    }
+                })));
+            }
+        });
+
+
+
         //initialise the title Texture and Actor
         titleTex=new Texture(Gdx.files.internal("title.png"));
         titleImg=new Image(titleTex);
-        titleImg.setSize(titleTex.getWidth(),titleTex.getHeight());
-        titleImg.setPosition(0,1400);
+        titleImg.setSize(titleTex.getWidth(), titleTex.getHeight());
+        titleImg.setPosition(0, 1400);
 
 
 
 
         // add actors to stage
         stage.addActor(playButton);
+        stage.addActor(aboutButton);
         stage.addActor(titleImg);
         stage.addAction(Actions.sequence(Actions.alpha(0),Actions.fadeIn(0.3f)));
 

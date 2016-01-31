@@ -14,5 +14,15 @@
   com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
   default-horizontal: { background: default-slider, knob: default-slider-knob },
   default-vertical: { background: default-slider, knob: default-round-large }
-}
+},
+
+"com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle":{
+        "default":{
+            "font":default-font,
+            "fontColorUnselected":black,
+            "fontColorSelected":white,
+             "selection": selection
+        }
+    }
+
 }
