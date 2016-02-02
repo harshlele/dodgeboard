@@ -47,6 +47,7 @@ public class PauseScreen implements Screen {
 
     @Override
     public void show() {
+        mainGame.handler.setAdVis(true);
 
         stage=new Stage(new FitViewport(1080,1920));
         Gdx.input.setInputProcessor(stage);
@@ -85,10 +86,14 @@ public class PauseScreen implements Screen {
         resumeButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                //shut down the ads, just in case it doesn't happen in the next screen
+                mainGame.handler.setAdVis(false);
                 mainGame.clickSound.play();
                 stage.addAction(Actions.sequence(Actions.moveBy(0,stage.getHeight(),0.3f),Actions.run(new Runnable() {
                     @Override
                     public void run() {
+
                         exitTime=System.currentTimeMillis();
                         mainGame.setScreen(new GameScreen(mainGame,true,exitTime-initTime));
                     }
@@ -97,10 +102,13 @@ public class PauseScreen implements Screen {
             }
         });
 
-        mainMenuButton.addListener(new ClickListener(){
+
+        mainMenuButton.addListener(new ClickListener() {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                //shut down the ads, just in case it doesn't happen in the next screen
+                mainGame.handler.setAdVis(false);
                 mainGame.clickSound.play();
                 stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
@@ -111,6 +119,8 @@ public class PauseScreen implements Screen {
                 //mainGame.setScreen(new MainMenuScreen(mainGame));
             }
         });
+
+
 
 
         //add buttons and laberls to stage

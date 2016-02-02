@@ -1,13 +1,11 @@
+
 package com.harshal.dodgeboard;
+
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
@@ -23,13 +21,16 @@ public class MainGame extends Game {
     protected SavedState storedState;
     //the common Sound that plays when a button is pressed
     protected Sound clickSound;
-
+    //screen width and height
     public int screenWidth,screenHeight;
 
-    public MainGame(int width,int height) {
+    //instance of AdHandler to control ad visibility from the various game screens
+    protected AdHandler handler;
+
+    public MainGame(int width,int height,AdHandler adHandler) {
        screenWidth=width;
        screenHeight=height;
-       //clickSound= Gdx.audio.newSound(Gdx.files.internal("Music/clickSound.ogg"));
+       handler=adHandler;
     }
 
     //create method is fired when the game begins

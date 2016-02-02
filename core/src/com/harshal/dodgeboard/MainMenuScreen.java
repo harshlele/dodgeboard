@@ -38,6 +38,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
+        //disable ads
+        mainGame.handler.setAdVis(false);
+
         //initialise stage and skin
         stage=new Stage(new FitViewport(1080,1920));
         Gdx.input.setInputProcessor(stage);

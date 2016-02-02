@@ -87,6 +87,7 @@ public class GameOverScreen implements Screen {
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                mainGame.handler.setAdVis(false);
                 mainGame.clickSound.play();
                 stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
@@ -101,6 +102,7 @@ public class GameOverScreen implements Screen {
         mainMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                mainGame.handler.setAdVis(false);
                 mainGame.clickSound.play();
                 stage.addAction(Actions.sequence(Actions.moveBy(0, stage.getHeight(), 0.3f), Actions.run(new Runnable() {
                     @Override
@@ -111,6 +113,8 @@ public class GameOverScreen implements Screen {
                 //mainGame.setScreen(new MainMenuScreen(mainGame));
             }
         });
+
+        mainGame.handler.setAdVis(true);
 
         //add buttons and laberls to stage
         stage.addActor(playAgainButton);

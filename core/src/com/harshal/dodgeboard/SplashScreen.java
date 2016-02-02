@@ -31,6 +31,10 @@ public class SplashScreen implements Screen {
 
     @Override
     public void show() {
+        //disable ads
+        mainGame.handler.setAdVis(false);
+
+
         stage=new Stage(new FitViewport(1080,1920));
         splashTime=0;
         changeScreen=false;

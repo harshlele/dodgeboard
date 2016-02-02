@@ -120,6 +120,8 @@ public class GameScreen implements Screen,InputProcessor {
 
     @Override
     public void show() {
+        mainGame.handler.setAdVis(false);
+
         batch = new SpriteBatch();
 
         // initialize camera
