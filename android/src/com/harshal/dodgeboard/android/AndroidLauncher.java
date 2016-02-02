@@ -44,16 +44,19 @@ public class AndroidLauncher extends AndroidApplication {
 
 		AdView adView=new AdView(this);
 		adView.setAdSize(AdSize.SMART_BANNER);
+		final TelephonyManager tm =(TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
-		//AdRequest request=new AdRequest.Builder().addTestDevice(deviceid).build();
-
-		AdRequest request=new AdRequest.Builder().build();
-		//adView.loadAd(request);
+		String deviceid = tm.getDeviceId();
+		AdRequest request=new AdRequest.Builder().addTestDevice(deviceid).build();
+		adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+		adView.loadAd(request);
 
 		layout.addView(gameView);
 		RelativeLayout.LayoutParams adParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 		layout.addView(adView,adParams);
 		setContentView(layout);
+
+
 
 
 		//initialize(new MainGame(width,height), config);
