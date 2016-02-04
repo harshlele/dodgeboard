@@ -62,7 +62,7 @@ public class AndroidLauncher extends AndroidApplication implements AdHandler {
 		AdRequest request=new AdRequest.Builder().addTestDevice(deviceid).build();
 		//this unit ID is ONLY THERE FOR TESTING
 		adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-		adView.loadAd(request);
+		//adView.loadAd(request);
 
 		//add the ad and game to Relative Layout and show the relative layout
 		layout.addView(gameView);
