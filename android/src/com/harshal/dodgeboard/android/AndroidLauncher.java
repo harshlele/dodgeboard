@@ -22,8 +22,11 @@ import com.harshal.dodgeboard.AdHandler;
 import com.harshal.dodgeboard.MainGame;
 
 public class AndroidLauncher extends AndroidApplication implements AdHandler {
+
+	/*ALL CODE RELATED TO ADS HAS BEEN COMMENTED OUT, WILL ONLY BE USED FOR TESTING*/
+
 	//adview
-	protected AdView adView;
+	//protected AdView adView;
 
 	private final int SHOW_ADS = 1;
 	private final int HIDE_ADS = 0;
@@ -52,6 +55,9 @@ public class AndroidLauncher extends AndroidApplication implements AdHandler {
 		//return an instance of the View that will be used in the Relative Layout
 		View gameView=initializeForView(new MainGame(width,height,this),config);
 
+
+		//Advertisement code, runs in release version
+		/*
 		//initialize the adview and set the type to SMART_BANNER(scales to screen size)
 		adView = new AdView(this);
 		adView.setAdSize(AdSize.SMART_BANNER);
@@ -63,11 +69,18 @@ public class AndroidLauncher extends AndroidApplication implements AdHandler {
 		//this unit ID is ONLY THERE FOR TESTING
 		adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
 		//adView.loadAd(request);
+		*/
+
 
 		//add the ad and game to Relative Layout and show the relative layout
 		layout.addView(gameView);
+
+		//Advertisement code, runs in release version
+		/*
 		RelativeLayout.LayoutParams adParams=new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 		layout.addView(adView,adParams);
+		*/
+
 		setContentView(layout);
 
 
@@ -83,12 +96,12 @@ public class AndroidLauncher extends AndroidApplication implements AdHandler {
 			switch(msg.what) {
 				case SHOW_ADS:
 				{
-					adView.setVisibility(View.VISIBLE);
+					//adView.setVisibility(View.VISIBLE);
 					break;
 				}
 				case HIDE_ADS:
 				{
-					adView.setVisibility(View.GONE);
+					//adView.setVisibility(View.GONE);
 					break;
 				}
 			}
