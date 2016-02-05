@@ -62,11 +62,11 @@ public class AndroidLauncher extends AndroidApplication implements AdHandler {
 		adView = new AdView(this);
 		adView.setAdSize(AdSize.SMART_BANNER);
 		//set test device by passing in the device id
-		final TelephonyManager tm =(TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-		String deviceid = tm.getDeviceId();
+		//final TelephonyManager tm =(TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+		//String deviceid = tm.getDeviceId();
 
-		AdRequest request=new AdRequest.Builder().addTestDevice(deviceid).build();
-		//this unit ID is ONLY THERE FOR TESTING
+		AdRequest request=new AdRequest.Builder().build();
+
 		adView.setAdUnitId("ca-app-pub-7444749934962149/9626204517");
 		adView.loadAd(request);
 
